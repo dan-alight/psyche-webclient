@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from "react-router";
 import "./index.css";
 import App from "@/App";
 import Chat from "@/pages/Chat";
+import Options from "@/pages/Options";
 
 let router = createBrowserRouter([
   {
@@ -13,6 +14,10 @@ let router = createBrowserRouter([
       {
         index: true,
         Component: Chat,
+      },
+      {
+        path: "options",
+        Component: Options,
       },
     ],
   },
