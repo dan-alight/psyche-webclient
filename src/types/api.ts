@@ -21,3 +21,17 @@ export interface ApiKeyUpdate {
   new_name?: string;
   new_active?: boolean;
 }
+
+export interface JournalEntryRead {
+  id: number;
+  content: string;
+  created_at: string;
+}
+
+export interface JournalEntryCreate {
+  content: string;
+}
+
+export interface JournalEntryStats {
+  count: number;
+}

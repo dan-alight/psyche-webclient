@@ -15,6 +15,7 @@ export default function NavBar() {
       }}
     >
       <Link to="/">Home</Link>
+      <Link to="journal">Journal</Link>
       <Link to="options">Options</Link>
     </div>
   );

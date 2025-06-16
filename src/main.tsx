@@ -5,6 +5,9 @@ import "./index.css";
 import App from "@/App";
 import Chat from "@/pages/Chat";
 import Options from "@/pages/Options";
+import Journal from "./pages/Journal";
+import JournalEntryDetail from "./pages/JournalEntryDetail";
+import { PageLayout } from "./components/PageLayout";
 
 let router = createBrowserRouter([
   {
@@ -12,12 +15,25 @@ let router = createBrowserRouter([
     Component: App,
     children: [
       {
-        index: true,
-        Component: Chat,
-      },
-      {
-        path: "options",
-        Component: Options,
+        Component: PageLayout,
+        children: [
+          {
+            index: true,
+            Component: Chat,
+          },
+          {
+            path: "options",
+            Component: Options,
+          },
+          {
+            path: "journal",
+            Component: Journal,
+          },
+          {
+            path: "journal/:entryId",
+            Component: JournalEntryDetail,
+          },
+        ],
       },
     ],
   },
