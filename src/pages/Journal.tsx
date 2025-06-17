@@ -10,54 +10,45 @@ import { Container } from "@/components/Container";
 import type { JournalEntryRead, JournalEntryCreate } from "@/types/api";
 import { useJournalStore } from "@/stores/journal-store";
 
-function JournalEntryCreator() {
-  const { createEntry } = useJournalStore();
-
-  const [newJournalEntry, setNewJournalEntry] = useState<JournalEntryCreate>({
-    content: "",
-  });
-
-  const handleCreate = async () => {
-    if (!newJournalEntry.content.trim()) return;
-    await createEntry(newJournalEntry);
-    setNewJournalEntry({ content: "" });
-  };
-
-  return (
-    <>
-      <textarea
-        name="logtextarea"
-        css={{ width: "100%" }}
-        rows={15}
-        placeholder="What do you want to say?"
-        onChange={(e) => setNewJournalEntry({ content: e.target.value })}
-        value={newJournalEntry.content}
-      />
-      <button css={{ alignSelf: "self-start" }} onClick={handleCreate}>
-        Save
-      </button>
-    </>
-  );
-}
-
 const ITEMS_PER_PAGE = 10;
 
 export default function Journal() {
   const navigate = useNavigate();
   const theme = useTheme();
   const [searchParams, setSearchParams] = useSearchParams();
-
   const {
     journalEntries,
     journalStats,
     isLoading,
+    initialized,
     fetchStats,
     fetchEntries,
     currentPage,
+    createEntry,
   } = useJournalStore();
+  const [newJournalEntry, setNewJournalEntry] = useState<JournalEntryCreate>({
+    content: "",
+  });
+
+  const handleCreate = async () => {
+    if (!newJournalEntry.content.trim()) return;
+
+    const initialMaxPage = Math.ceil(journalStats.count / ITEMS_PER_PAGE) || 1;
+    const subsequentMaxPage =
+      Math.ceil((journalStats.count + 1) / ITEMS_PER_PAGE) || 1;
+    await createEntry(newJournalEntry);
+
+    let activePage = currentPage ? currentPage : 0;
+    if (initialMaxPage < subsequentMaxPage || activePage < subsequentMaxPage) {
+      setSearchParams({ page: String(subsequentMaxPage) });
+    } else {
+      fetchEntries(subsequentMaxPage, ITEMS_PER_PAGE);
+    }
+    setNewJournalEntry({ content: "" });
+  };
 
   useEffect(() => {
-    if (!journalStats) {
+    if (!initialized) {
       fetchStats();
       return;
     }
@@ -74,9 +65,9 @@ export default function Journal() {
     if (currentPage !== targetPage) {
       fetchEntries(targetPage, ITEMS_PER_PAGE);
     }
-  }, [journalStats, searchParams]);
+  }, [initialized, searchParams]);
 
-  if (!journalStats || !currentPage) return null;
+  if (!currentPage) return null;
 
   const totalPages = Math.ceil(journalStats.count / ITEMS_PER_PAGE) || 1;
 
@@ -84,7 +75,18 @@ export default function Journal() {
     <Container>
       <h1>Log your life and manage previous logs</h1>
 
-      <JournalEntryCreator />
+      <textarea
+        name="logtextarea"
+        css={{ width: "100%" }}
+        rows={15}
+        placeholder="What do you want to say?"
+        onChange={(e) => setNewJournalEntry({ content: e.target.value })}
+        value={newJournalEntry.content}
+      />
+      <button css={{ alignSelf: "self-start" }} onClick={handleCreate}>
+        Save
+      </button>
+
       <h2>Previous journal entries</h2>
 
       <div
