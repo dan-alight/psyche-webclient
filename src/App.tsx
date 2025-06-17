@@ -6,6 +6,8 @@ import { ThemeProvider } from "@emotion/react";
 import { ScrollContext } from "./contexts/ScrollContext";
 import NavBar from "@/components/NavBar";
 import { lightTheme } from "@/themes";
+import { ControlPanelProvider } from "@/contexts/ControlPanelContext";
+import { ControlPanel } from "@/components/ControlPanel";
 
 // This map still stores the scroll positions.
 const scrollPositions = new Map<string, number>();
@@ -42,16 +44,25 @@ function App() {
   }, [location.key]);
 
   return (
-    <ScrollContext.Provider value={{ scrollableContainerRef }}>
-      <ThemeProvider theme={lightTheme}>
-        <div css={{ display: "flex", flexDirection: "row", height: "100vh" }}>
-          <NavBar />
-          <div css={{ flex: 1, position: "relative" }}>
-            <Outlet />
+    <ControlPanelProvider>
+      <ScrollContext.Provider value={{ scrollableContainerRef }}>
+        <ThemeProvider theme={lightTheme}>
+          <div css={{ display: "flex", height: "100vh" }}>
+            <NavBar />
+            <div
+              ref={scrollableContainerRef}
+              css={{
+                flex: 1,
+                overflowY: "auto",
+              }}
+            >
+              <Outlet />
+            </div>
+            <ControlPanel />
           </div>
-        </div>
-      </ThemeProvider>
-    </ScrollContext.Provider>
+        </ThemeProvider>
+      </ScrollContext.Provider>
+    </ControlPanelProvider>
   );
 }
 
