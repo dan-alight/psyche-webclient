@@ -10,7 +10,7 @@ import { Container } from "@/components/Container";
 import type { JournalEntryRead, JournalEntryCreate } from "@/types/api";
 import { useJournalStore } from "@/stores/journal-store";
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 30;
 
 export default function Journal() {
   const navigate = useNavigate();
@@ -29,6 +29,15 @@ export default function Journal() {
   const [newJournalEntry, setNewJournalEntry] = useState<JournalEntryCreate>({
     content: "",
   });
+  const [navigateToEntry, setNavigateToEntry] = useState<number | null>(
+    currentPage
+  );
+
+  useEffect(() => {
+    if (currentPage) {
+      setNavigateToEntry(currentPage);
+    }
+  }, [currentPage]);
 
   const handleCreate = async () => {
     if (!newJournalEntry.content.trim()) return;
@@ -73,7 +82,7 @@ export default function Journal() {
 
   return (
     <Container>
-      <h1>Log your life and manage previous logs</h1>
+      <h1>Journal your life and manage previous entries</h1>
 
       <textarea
         name="logtextarea"
@@ -92,25 +101,61 @@ export default function Journal() {
       <div
         css={{
           display: "flex",
-          justifyContent: "space-between",
+          justifyContent: "center",
           alignItems: "center",
-          marginBottom: "1rem",
+          marginBottom: `${theme.spacing.sm}rem`,
+          gap: `${theme.spacing.sm}rem`,
         }}
       >
+        <button
+          onClick={() => setSearchParams({ page: "1" })}
+          disabled={currentPage <= 1 || isLoading}
+        >
+          {"<<"}
+        </button>
         <button
           onClick={() => setSearchParams({ page: String(currentPage - 1) })}
           disabled={currentPage <= 1 || isLoading}
         >
-          Previous
+          {"<"}
         </button>
-        <span>
-          Page {currentPage} of {totalPages}{" "}
-        </span>
+        <input
+          type="number"
+          value={navigateToEntry ?? ""}
+          onChange={(e) => {
+            const value = parseInt(e.target.value, 10);
+            if (!isNaN(value) && value >= 1 && value <= totalPages) {
+              setNavigateToEntry(value);
+            } else {
+              setNavigateToEntry(null);
+            }
+          }}
+          min={1}
+          max={totalPages}
+          disabled={isLoading}
+          css={{ textAlign: "center" }}
+        />
+        {"/"}
+        <span>{totalPages}</span>
+        <button
+          css={{}}
+          onClick={(e) => {
+            setSearchParams({ page: String(navigateToEntry) });
+          }}
+        >
+          Go
+        </button>
         <button
           onClick={() => setSearchParams({ page: String(currentPage + 1) })}
           disabled={currentPage >= totalPages || isLoading}
         >
-          Next
+          {">"}
+        </button>
+        <button
+          onClick={() => setSearchParams({ page: String(totalPages) })}
+          disabled={currentPage >= totalPages || isLoading}
+        >
+          {">>"}
         </button>
       </div>
 
