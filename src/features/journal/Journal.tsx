@@ -8,7 +8,7 @@ import {
 } from "react-router";
 import { Container } from "@/components/Container";
 import type { JournalEntryRead, JournalEntryCreate } from "@/types/api";
-import { useJournalStore } from "@/stores/journal-store";
+import { useJournalStore } from "@/features/journal/journal-store";
 
 const ITEMS_PER_PAGE = 30;
 
@@ -167,7 +167,7 @@ export default function Journal() {
         css={{
           display: "flex",
           flexDirection: "column",
-          gap: `${theme.spacing.sm}rem`,
+          //gap: `${theme.spacing.sm}rem`,
         }}
       >
         {journalEntries.map((journalEntry) => (

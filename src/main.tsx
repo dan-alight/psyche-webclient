@@ -2,11 +2,13 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import "./index.css";
-import App from "@/App";
-import Chat from "@/pages/Chat";
-import Options from "@/pages/Options";
-import Journal from "./pages/Journal";
-import JournalEntryDetail from "./pages/JournalEntryDetail";
+import App from "@/app/App";
+import Chat from "@/features/chat/Chat";
+import Options from "@/features/options/Options";
+import Journal from "@/features/journal/Journal";
+import JournalEntryDetail from "@/features/journal/JournalEntryDetail";
+import ApiKeys from "@/features/options/ApiKeys";
+import Provider from "@/features/options/Provider";
 
 let router = createBrowserRouter([
   {
@@ -20,6 +22,16 @@ let router = createBrowserRouter([
       {
         path: "options",
         Component: Options,
+        children: [
+          {
+            index: true,
+            Component: Provider,
+          },
+          {
+            path: "api-keys",
+            Component: ApiKeys,
+          },
+        ],
       },
       {
         path: "journal",

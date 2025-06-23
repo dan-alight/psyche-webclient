@@ -1,16 +1,38 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useTheme } from "@emotion/react";
 import { useParams, useNavigate, useLocation } from "react-router";
 import type { JournalEntryRead, JournalEntryCreate } from "@/types/api";
 import config from "@/config";
-import { useJournalStore } from "@/stores/journal-store";
+import { useJournalStore } from "@/features/journal/journal-store";
+import { Container } from "@/components/Container";
+import { useControlPanel } from "@/contexts/ControlPanelContext";
+
+const SettingsPanelContent = () => {
+  return (
+    <div>
+      <h3>Control Panel</h3>
+    </div>
+  );
+};
 
 export default function JournalEntryDetail() {
+  const theme = useTheme();
   const { entryId } = useParams();
   if (!entryId) return null;
   const navigate = useNavigate();
   const location = useLocation();
   const { getEntryById } = useJournalStore();
+  const { setPanelContent } = useControlPanel();
+
+  const panelContent = useMemo(() => <SettingsPanelContent />, []);
+
+  useEffect(() => {
+    /*     setPanelContent(panelContent); */
+
+    return () => {
+      setPanelContent(null);
+    };
+  }, [panelContent]);
 
   const cachedEntry = getEntryById(parseInt(entryId, 10));
   const [entry, setEntry] = useState<JournalEntryRead | null>(
@@ -48,8 +70,11 @@ export default function JournalEntryDetail() {
   if (!entry) return <div>Entry not found.</div>;
 
   return (
-    <div>
-      <button onClick={close}>hello {entry.id}</button>
-    </div>
+    <Container>
+      <div css={{ background: theme.colors.surface }}>
+        <p>{entry.content}</p>
+      </div>
+      <span>{entry.created_at}</span>
+    </Container>
   );
 }

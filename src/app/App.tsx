@@ -1,13 +1,11 @@
-// src/App.tsx
-
 import { useRef, useLayoutEffect } from "react";
 import { useLocation, Outlet } from "react-router";
 import { ThemeProvider } from "@emotion/react";
-import { ScrollContext } from "./contexts/ScrollContext";
-import NavBar from "@/components/NavBar";
-import { lightTheme } from "@/themes";
+import { ScrollContext } from "@/app/ScrollContext";
+import Navbar from "@/app/Navbar";
+import { lightTheme, darkTheme } from "@/app/themes";
 import { ControlPanelProvider } from "@/contexts/ControlPanelContext";
-import { ControlPanel } from "@/components/ControlPanel";
+import { ControlPanel } from "@/app/ControlPanel";
 
 // This map still stores the scroll positions.
 const scrollPositions = new Map<string, number>();
@@ -48,13 +46,15 @@ function App() {
       <ScrollContext.Provider value={{ scrollableContainerRef }}>
         <ThemeProvider theme={lightTheme}>
           <div css={{ display: "flex", height: "100vh" }}>
-            <NavBar />
+            <Navbar />
             <div
               ref={scrollableContainerRef}
-              css={{
+              css={(theme) => ({
                 flex: 1,
                 overflowY: "auto",
-              }}
+                background: theme.colors.background,
+                minHeight: 0,
+              })}
             >
               <Outlet />
             </div>

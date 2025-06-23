@@ -1,4 +1,3 @@
-// emotion.d.ts (place in your src folder or types folder)
 import "@emotion/react";
 
 declare module "@emotion/react" {
@@ -19,6 +18,12 @@ declare module "@emotion/react" {
       disabled: {
         background: string;
         foreground: string;
+      };
+      separator: string;
+      link: {
+        default: string;
+        active: string;
+        hover: string;
       };
     };
     spacing: {

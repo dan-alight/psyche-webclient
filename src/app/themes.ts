@@ -62,6 +62,12 @@ export const lightTheme: Theme = {
       background: "rgb(153, 153, 153)",
       foreground: "rgb(0,0,0)",
     },
+    separator: "rgb(155,155,155)",
+    link: {
+      default: "rgb(91, 121, 97)",
+      active: "rgb(0, 118, 0)",
+      hover: "rgb(34, 139, 34)",
+    },
   },
 };
 
@@ -78,6 +84,12 @@ export const darkTheme = {
     disabled: {
       background: "rgb(0,0,0)",
       foreground: "rgb(0,0,0)",
+    },
+    separator: "rgb(155,155,155)",
+    link: {
+      default: "rgb(55, 226, 95)",
+      active: "rgb(0, 128, 0)",
+      hover: "rgb(34, 139, 34)",
     },
   },
 };

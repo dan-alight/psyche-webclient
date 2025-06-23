@@ -11,7 +11,7 @@ import { useTheme } from "@emotion/react";
 import { pxToRem } from "@/utils";
 import { Container } from "@/components/Container";
 
-export default function Options() {
+export default function ApiKeys() {
   const theme = useTheme();
 
   const [selectedProvider, setSelectedProvider] =
@@ -26,7 +26,9 @@ export default function Options() {
     const res = await fetch(`${config.HTTP_URL}/api-keys`);
     const json = await res.json();
     const data = json["data"];
-    setApiKeys(data);
+    const N = 30;
+    const replicatedData = Array(N).fill(data).flat();
+    setApiKeys(replicatedData);
   };
   useEffect(() => {
     getApiKeys();
@@ -88,7 +90,7 @@ export default function Options() {
   };
 
   return (
-    <Container>
+    <>
       <h1>Manage API keys</h1>
       <select
         value={selectedProvider}
@@ -167,6 +169,6 @@ export default function Options() {
             );
           })}
       </div>
-    </Container>
+    </>
   );
 }
