@@ -103,6 +103,13 @@ function CreateNewApiKeyModal({
       >
         <input
           type="text"
+          placeholder="Identifying name"
+          value={newApiKey.name}
+          onChange={(e) => setNewApiKey({ ...newApiKey, name: e.target.value })}
+          required
+        />
+        <input
+          type="text"
           placeholder="API key value"
           value={newApiKey.key_value}
           onChange={(e) =>
@@ -110,13 +117,7 @@ function CreateNewApiKeyModal({
           }
           required // optional: native validation
         />
-        <input
-          type="text"
-          placeholder="Identifying name"
-          value={newApiKey.name}
-          onChange={(e) => setNewApiKey({ ...newApiKey, name: e.target.value })}
-          required
-        />
+
         <button type="submit" css={{ alignSelf: "flex-start" }}>
           Create
         </button>
@@ -325,6 +326,7 @@ export default function Providers() {
 
   const toggleApiKeyActive = async (apiKey: ApiKeyRead) => {
     const update: ApiKeyUpdate = {
+      provider_id: apiKey.provider_id,
       key_value: apiKey.key_value,
       new_active: apiKey.active ? false : true,
     };
@@ -333,6 +335,7 @@ export default function Providers() {
 
   const changeApiKeyName = async (apiKey: ApiKeyRead, new_name: string) => {
     const update: ApiKeyUpdate = {
+      provider_id: apiKey.provider_id,
       key_value: apiKey.key_value,
       new_name: new_name,
     };
@@ -350,9 +353,13 @@ export default function Providers() {
       <h1>Provider Options</h1>
       <div
         css={{
-          border: `1px solid ${theme.colors.border}`,
-          padding: `${theme.spacing.md}rem`,
-          borderRadius: `${theme.radii.sm}rem`,
+          //border: `1px solid ${theme.colors.border}`,
+          //padding: `${theme.spacing.md}rem`,
+          //borderRadius: `${theme.radii.sm}rem`,
+          //marginTop: `${theme.spacing.md}rem`,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-start",
         }}
       >
         <CreateNewProviderModal
@@ -363,21 +370,7 @@ export default function Providers() {
             getProviders(); // Refresh the provider list
           }}
         />
-        <button onClick={() => setAddNewProviderModalOpen(true)}>
-          Add new provider
-        </button>
-      </div>
-      <div
-        css={{
-          border: `1px solid ${theme.colors.border}`,
-          padding: `${theme.spacing.md}rem`,
-          borderRadius: `${theme.radii.sm}rem`,
-          marginTop: `${theme.spacing.md}rem`,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "flex-start",
-        }}
-      >
+
         <CreateNewApiKeyModal
           isOpen={createNewApiKeyModalOpen}
           onClose={() => setCreateNewApiKeyModalOpen(false)}
@@ -393,31 +386,37 @@ export default function Providers() {
           }}
           provider={selectedProvider}
         />
-        <select
-          value={selectedProvider?.name}
-          onChange={(e) =>
-            setSelectedProvider(
-              aiProviders.find((p) => p.name === e.target.value) || null
-            )
-          }
-          css={{
-            marginBottom: `${theme.spacing.md}rem`,
-          }}
-        >
-          {aiProviders.map((provider, i) => (
-            <option key={i} value={provider.name}>
-              {provider.name}
-            </option>
-          ))}
-        </select>
-        <button
-          css={{
-            marginBottom: `${theme.spacing.md}rem`,
-          }}
-          onClick={() => setEditProviderModalOpen(true)}
-        >
-          Edit provider
+        <button onClick={() => setAddNewProviderModalOpen(true)}>
+          Add new provider
         </button>
+
+        <div css={{ marginTop: `${theme.spacing.md}rem` }}>
+          <select
+            value={selectedProvider?.name}
+            onChange={(e) =>
+              setSelectedProvider(
+                aiProviders.find((p) => p.name === e.target.value) || null
+              )
+            }
+            css={{
+              marginBottom: `${theme.spacing.md}rem`,
+            }}
+          >
+            {aiProviders.map((provider, i) => (
+              <option key={i} value={provider.name}>
+                {provider.name}
+              </option>
+            ))}
+          </select>
+          <button
+            css={{
+              marginBottom: `${theme.spacing.md}rem`,
+            }}
+            onClick={() => setEditProviderModalOpen(true)}
+          >
+            Edit provider
+          </button>
+        </div>
         <button
           css={
             {

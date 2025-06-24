@@ -26,7 +26,7 @@ export default function Options() {
       <div
         css={{
           padding: `${theme.spacing.sm}rem`,
-          //borderRight: `1px solid ${theme.colors.separator}`,
+          borderRight: `1px solid ${theme.colors.separator}`,
           display: "flex",
           flexDirection: "column",
           gap: `${theme.spacing.sm}rem`,

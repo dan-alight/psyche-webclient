@@ -24,6 +24,7 @@ export interface ApiKeyCreate {
 }
 
 export interface ApiKeyUpdate {
+  provider_id: number;
   key_value: string;
   new_name?: string;
   new_active?: boolean;
