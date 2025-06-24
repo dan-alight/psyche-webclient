@@ -31,9 +31,9 @@ const baseTheme = {
     lg: "1024px",
   },
   radii: {
-    sm: 1,
-    md: 1.5,
-    lg: 2,
+    sm: 0.25,
+    md: 0.5,
+    lg: 1,
   },
   zIndices: {
     dropdown: 1,
@@ -68,6 +68,7 @@ export const lightTheme: Theme = {
       active: "rgb(0, 118, 0)",
       hover: "rgb(34, 139, 34)",
     },
+    modalBackground: "rgba(255, 255, 255, 0.75)",
   },
 };
 
@@ -91,5 +92,6 @@ export const darkTheme = {
       active: "rgb(0, 128, 0)",
       hover: "rgb(34, 139, 34)",
     },
+    modalBackground: "rgba(0, 0, 0, 0.5)",
   },
 };

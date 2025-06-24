@@ -1,18 +1,25 @@
-export const AiProviders = ["openai", "anthropic", "google"] as const;
+export interface AiProviderRead {
+  id: number;
+  name: string;
+  base_url: string;
+}
 
-export type AiProvider = (typeof AiProviders)[number];
+export interface AiProviderCreate {
+  name: string;
+  base_url: string;
+}
 
 export interface ApiKeyRead {
   id: number;
   key_value: string;
-  provider: AiProvider;
+  provider_id: number;
   name: string;
   active: boolean;
 }
 
 export interface ApiKeyCreate {
+  provider_id: number;
   key_value: string;
-  provider: AiProvider;
   name: string;
 }
 

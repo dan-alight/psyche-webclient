@@ -25,6 +25,7 @@ declare module "@emotion/react" {
         active: string;
         hover: string;
       };
+      modalBackground: string;
     };
     spacing: {
       xs: number;

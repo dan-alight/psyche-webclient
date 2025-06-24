@@ -7,8 +7,7 @@ import Chat from "@/features/chat/Chat";
 import Options from "@/features/options/Options";
 import Journal from "@/features/journal/Journal";
 import JournalEntryDetail from "@/features/journal/JournalEntryDetail";
-import ApiKeys from "@/features/options/ApiKeys";
-import Provider from "@/features/options/Provider";
+import Providers from "@/features/options/Providers";
 
 let router = createBrowserRouter([
   {
@@ -25,11 +24,7 @@ let router = createBrowserRouter([
         children: [
           {
             index: true,
-            Component: Provider,
-          },
-          {
-            path: "api-keys",
-            Component: ApiKeys,
+            Component: Providers,
           },
         ],
       },
