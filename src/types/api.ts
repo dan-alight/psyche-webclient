@@ -24,10 +24,19 @@ export interface ApiKeyCreate {
 }
 
 export interface ApiKeyUpdate {
-  provider_id: number;
-  key_value: string;
   new_name?: string;
   new_active?: boolean;
+}
+
+export interface AiModelRead {
+  id: number;
+  name: string;
+  provider_id: number;
+  active: boolean;
+}
+
+export interface AiModelUpdate {  
+  active?: boolean;
 }
 
 export interface JournalEntryRead {

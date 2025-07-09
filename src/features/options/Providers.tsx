@@ -7,9 +7,8 @@ import type {
   ApiKeyUpdate,
   ApiKeyRead,
   AiProviderCreate,
+  AiModelRead,
 } from "@/types/api";
-import { pxToRem } from "@/utils";
-import { Container } from "@/components/Container";
 
 function Modal({
   isOpen,
@@ -91,6 +90,7 @@ function CreateNewApiKeyModal({
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <form
+        name="createApiKeyForm"
         onSubmit={(e) => {
           e.preventDefault(); // prevent full page reload
           createApiKey(); // your existing function
@@ -157,6 +157,7 @@ function CreateNewProviderModal({
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <form
+        name="createProviderForm"
         onSubmit={(e) => {
           e.preventDefault();
           createProvider(); // Call the function to create the provider
@@ -235,6 +236,7 @@ function EditProviderModal({
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <form
+        name="editProviderForm"
         onSubmit={(e) => {
           e.preventDefault();
           updateProvider();
@@ -265,6 +267,68 @@ function EditProviderModal({
   );
 }
 
+function ModelList({
+  aiModels,
+  setAiModels,
+  selectedProvider,
+}: {
+  aiModels: AiModelRead[];
+  setAiModels: React.Dispatch<React.SetStateAction<AiModelRead[]>>;
+  selectedProvider: AiProviderRead | null;
+}) {
+  useEffect(() => {
+    console.log("Models updated:", aiModels);
+  }, [aiModels]);
+
+  if (!selectedProvider) return null;
+  if (aiModels.length === 0) {
+    return (
+      <div>
+        <h3>No models available for {selectedProvider.name}</h3>
+      </div>
+    );
+  }
+
+  const toggleActive = async (model: AiModelRead) => {
+    const res = await fetch(
+      `${config.HTTP_URL}/ai-providers/${selectedProvider.id}/models/${model.id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ active: !model.active }),
+      }
+    );
+    if (res.ok) {
+      const updatedModel = await res.json();
+      setAiModels((prevModels) =>
+        prevModels.map((m) => (m.id === model.id ? updatedModel : m))
+      );
+    } else {
+      console.error("Failed to update model active status");
+    }
+  };
+
+  return (
+    <div>
+      <h3>Available {selectedProvider.name} models</h3>
+      {aiModels.map((model) => (
+        <div key={model.id}>
+          <input
+            type="checkbox"
+            checked={model.active}
+            onChange={(e) => {
+              toggleActive(model);
+            }}
+          />
+          {model.name}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function Providers() {
   const theme = useTheme();
 
@@ -276,6 +340,7 @@ export default function Providers() {
   const [selectedProvider, setSelectedProvider] =
     useState<AiProviderRead | null>(null);
   const [apiKeys, setApiKeys] = useState<ApiKeyRead[]>([]);
+  const [aiModels, setAiModels] = useState<AiModelRead[]>([]);
 
   const getApiKeys = async () => {
     const res = await fetch(`${config.HTTP_URL}/api-keys`);
@@ -290,6 +355,33 @@ export default function Providers() {
     const data = json["data"];
     setAiProviders(data);
   };
+
+  const getModels = async (refresh: boolean) => {
+    if (!selectedProvider) return;
+    const url = new URL(
+      `${config.HTTP_URL}/ai-providers/${selectedProvider.id}/models`
+    );
+    if (refresh) url.searchParams.set("refresh", "true");
+    const res = await fetch(url);
+
+    if (res.ok) {
+      const json = await res.json();
+      setAiModels(json);
+    } else {
+      console.error("Failed to fetch models");
+    }
+  };
+
+  useEffect(() => {
+    if (!selectedProvider) return;
+    const activeKey = apiKeys.find(
+      (key) => key.provider_id === selectedProvider.id && key.active
+    );
+    if (activeKey) getModels(false);
+    else {
+      setAiModels([]); // Clear models if no active key
+    }
+  }, [selectedProvider, apiKeys]);
 
   useEffect(() => {
     if (!selectedProvider && aiProviders.length > 0) {
@@ -311,9 +403,9 @@ export default function Providers() {
     }
   };
 
-  const updateApiKey = async (update: ApiKeyUpdate) => {
-    const res = await fetch(`${config.HTTP_URL}/api-keys`, {
-      method: "PUT",
+  const updateApiKey = async (id: number, update: ApiKeyUpdate) => {
+    const res = await fetch(`${config.HTTP_URL}/api-keys/${id}`, {
+      method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
@@ -326,20 +418,16 @@ export default function Providers() {
 
   const toggleApiKeyActive = async (apiKey: ApiKeyRead) => {
     const update: ApiKeyUpdate = {
-      provider_id: apiKey.provider_id,
-      key_value: apiKey.key_value,
       new_active: apiKey.active ? false : true,
     };
-    updateApiKey(update);
+    updateApiKey(apiKey.id, update);
   };
 
   const changeApiKeyName = async (apiKey: ApiKeyRead, new_name: string) => {
     const update: ApiKeyUpdate = {
-      provider_id: apiKey.provider_id,
-      key_value: apiKey.key_value,
       new_name: new_name,
     };
-    updateApiKey(update);
+    updateApiKey(apiKey.id, update);
   };
 
   return (
@@ -392,6 +480,7 @@ export default function Providers() {
 
         <div css={{ marginTop: `${theme.spacing.md}rem` }}>
           <select
+            name="aiProviderSelect"
             value={selectedProvider?.name}
             onChange={(e) =>
               setSelectedProvider(
@@ -467,8 +556,19 @@ export default function Providers() {
               );
             })}
         </div>
-        <h3>Available {selectedProvider?.name} models</h3>
-
+        {/* <h3>Available {selectedProvider?.name} models</h3> */}
+        <button
+          css={{ marginTop: `${theme.spacing.md}rem` }}
+          onClick={() => getModels(true)}
+        >
+          Refresh model list
+        </button>
+        <ModelList
+          aiModels={aiModels}
+          setAiModels={setAiModels}
+          selectedProvider={selectedProvider}
+        />
+        {/* <button onClick={refreshModels}>Refresh</button> */}
         {/* Additional content can be added here */}
       </div>
     </div>

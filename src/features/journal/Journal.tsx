@@ -91,6 +91,7 @@ export default function Journal() {
         placeholder="What do you want to say?"
         onChange={(e) => setNewJournalEntry({ content: e.target.value })}
         value={newJournalEntry.content}
+        
       />
       <button css={{ alignSelf: "self-start" }} onClick={handleCreate}>
         Save
@@ -134,6 +135,7 @@ export default function Journal() {
           max={totalPages}
           disabled={isLoading}
           css={{ textAlign: "center" }}
+          name="navigateToEntry"
         />
         {"/"}
         <span>{totalPages}</span>
