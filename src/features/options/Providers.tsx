@@ -284,7 +284,10 @@ function ModelList({
   if (aiModels.length === 0) {
     return (
       <div>
-        <i>No models available for {selectedProvider.name}</i>
+        <i>
+          No models available for {selectedProvider.name}. Activate a valid API
+          key then refresh the model list.
+        </i>
       </div>
     );
   }
@@ -474,11 +477,14 @@ export default function Providers() {
           }}
           provider={selectedProvider}
         />
-        <button onClick={() => setAddNewProviderModalOpen(true)}>
+        <button
+          css={{ marginBottom: `${theme.spacing.md}rem` }}
+          onClick={() => setAddNewProviderModalOpen(true)}
+        >
           Add new provider
         </button>
 
-        <div css={{ marginTop: `${theme.spacing.md}rem` }}>
+        <div>
           <select
             name="aiProviderSelect"
             value={selectedProvider?.name}
@@ -487,9 +493,11 @@ export default function Providers() {
                 aiProviders.find((p) => p.name === e.target.value) || null
               )
             }
-            css={{
-            /*   marginBottom: `${theme.spacing.md}rem`, */
-            }}
+            css={
+              {
+                /*   marginBottom: `${theme.spacing.md}rem`, */
+              }
+            }
           >
             {aiProviders.map((provider, i) => (
               <option key={i} value={provider.name}>
@@ -498,9 +506,11 @@ export default function Providers() {
             ))}
           </select>
           <button
-            css={{
-              /* marginBottom: `${theme.spacing.md}rem`, */
-            }}
+            css={
+              {
+                /* marginBottom: `${theme.spacing.md}rem`, */
+              }
+            }
             onClick={() => setEditProviderModalOpen(true)}
           >
             Edit provider
@@ -511,14 +521,12 @@ export default function Providers() {
         {/*          */}
         <h3>{selectedProvider?.name} keys</h3>
         <button
-          css={
-            {
-              marginBottom: `${theme.spacing.md}rem`,
-            }
-          }
+          css={{
+            marginBottom: `${theme.spacing.md}rem`,
+          }}
           onClick={() => setCreateNewApiKeyModalOpen(true)}
         >
-          Create new {selectedProvider?.name} key
+          Add new key
         </button>
         <div
           css={{
@@ -560,7 +568,7 @@ export default function Providers() {
             (apiKey) => apiKey.provider_id === selectedProvider?.id
           ).length === 0 && (
             <div>
-              <i>No API keys available for {selectedProvider?.name}</i>
+              <i>No API keys have been added for {selectedProvider?.name}.</i>
             </div>
           )}
         </div>

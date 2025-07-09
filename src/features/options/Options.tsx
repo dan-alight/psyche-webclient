@@ -14,57 +14,57 @@ import { Container } from "@/components/Container";
 
 export default function Options() {
   const theme = useTheme();
-  const sidebarWidth = useMemo(() => pxToRem(200), []);
+  //const sidebarWidth = useMemo(() => pxToRem(200), []);
   return (
-    <Container
-      variant="wide"
-      /*       css={{
-        display: "grid",
-        gridTemplateColumns: "1fr 5fr",
-        // The container itself should align to the start of the grid/flex context
-        // to prevent weird sticky behavior.
-        alignItems: "start",
-      }} */
+    <div
+      css={{
+        display: "flex",
+        flexDirection: "row",
+        //width: "100%",
+      }}
     >
-      {/* This sidebar becomes sticky within the main scrolling container */}
       <div
         css={{
-          // Sticky positioning
-          position: "fixed",
-          //top: 0,
-          // Give it full height to look correct
-          height: "100%",
-          minWidth: sidebarWidth, // Fixed width for the sidebar
-          // Original styles
+          position: "sticky",
+          top: 0,
+          height: "100vh",
+          maxWidth: pxToRem(200),
+          width: "100%",
+
           padding: `${theme.spacing.sm}rem`,
           borderRight: `1px solid ${theme.colors.separator}`,
           display: "flex",
           flexDirection: "column",
           gap: `${theme.spacing.sm}rem`,
           boxSizing: "border-box",
+          background: theme.colors.background,
         }}
       >
-        <NavLink to="/options" end /* ... */>
+        <NavLink
+          to="/options"
+          end
+          style={({ isActive }) => ({
+            color: isActive
+              ? theme.colors.link.active
+              : theme.colors.link.default,
+            fontWeight: isActive ? "bold" : "normal",
+          })}
+        >
           Providers
         </NavLink>
-        {/* ... other sidebar content ... */}
       </div>
 
-      {/* 
-        This content area is now simple.
-        - NO height
-        - NO overflowY
-        It will grow as tall as its content, which will cause the PARENT (in App.tsx) to scroll.
-      */}
       <div
         css={{
-          padding: `${theme.spacing.sm}rem`,
-          boxSizing: "border-box",
-          marginLeft: sidebarWidth
+          paddingLeft: `${theme.spacing.sm}rem`,
+          paddingRight: `${theme.spacing.sm}rem`,
+          //paddingBottom: `${theme.spacing.sm}rem`,
+          //boxSizing: "border-box",
+          //marginLeft: sidebarWidth,
         }}
       >
         <Outlet />
       </div>
-    </Container>
+    </div>
   );
 }

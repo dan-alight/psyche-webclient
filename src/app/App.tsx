@@ -47,42 +47,24 @@ function App() {
     <ControlPanelProvider>
       <ScrollContext.Provider value={{ scrollableContainerRef }}>
         <ThemeProvider theme={lightTheme}>
-          {/* 
-            THIS is now the main scrolling container.
-            - It gets the ref.
-            - It gets the overflowY.
-          */}
           <div
             ref={scrollableContainerRef}
             css={{
+              //background: "red",
               display: "flex",
               height: "100vh",
-              overflowY: "auto", // The scrollbar for this div will be on the far right.
-              scrollbarGutter: "stable", // Prevents layout shifts when scrollbar appears/disappears.
+              overflowY: "auto",
+              scrollbarGutter: "stable",
+              alignItems: "flex-start",
             }}
           >
-            <div
-              css={(theme) => ({
-                background: theme.colors.background,
-                borderRight: `1px solid ${theme.colors.separator}`,
-                padding: `${theme.spacing.sm}rem`,
-                display: "flex",
-                flexDirection: "column",
-                gap: `${theme.spacing.sm}rem`,
-                boxSizing: "border-box",
-                minWidth: sidebarWidth, // Fixed width for the sidebar
-                position: "fixed",
-                height: "100%",
-              })}
-            >
-              <Navbar /> {/* Assuming Navbar is just the content now */}
-            </div>
+            <Navbar sidebarWidth={sidebarWidth} />
 
             <div
               css={(theme) => ({
                 flex: 1, // Takes up remaining space
                 background: theme.colors.background,
-                marginLeft: sidebarWidth, // Adjust to match sidebar width
+                //marginLeft: sidebarWidth, // Adjust to match sidebar width
               })}
             >
               <Outlet />

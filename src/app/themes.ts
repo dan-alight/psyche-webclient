@@ -79,6 +79,7 @@ export const darkTheme = {
     secondary: "#6c757d",
     background: "#121212",
     surface: "#1e1e1e",
+    surfaceMenu: "rgba(30, 30, 30, 0.9)",
     text: "#ffffff",
     textSecondary: "#b3b3b3",
     border: "#333333",
