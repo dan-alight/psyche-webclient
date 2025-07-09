@@ -1,4 +1,4 @@
-import { useRef, useLayoutEffect } from "react";
+import { useRef, useLayoutEffect, useMemo, use } from "react";
 import { useLocation, Outlet } from "react-router";
 import { ThemeProvider } from "@emotion/react";
 import { ScrollContext } from "@/app/ScrollContext";
@@ -6,6 +6,7 @@ import Navbar from "@/app/Navbar";
 import { lightTheme, darkTheme } from "@/app/themes";
 import { ControlPanelProvider } from "@/contexts/ControlPanelContext";
 import { ControlPanel } from "@/app/ControlPanel";
+import { pxToRem } from "@/utils";
 
 // This map still stores the scroll positions.
 const scrollPositions = new Map<string, number>();
@@ -14,7 +15,6 @@ function App() {
   const location = useLocation();
   const scrollableContainerRef = useRef<HTMLDivElement>(null);
 
-  // We use useLayoutEffect to ensure the container is in the DOM.
   useLayoutEffect(() => {
     const container = scrollableContainerRef.current;
     if (!container) return;
@@ -41,24 +41,61 @@ function App() {
     // The effect re-runs ONLY when the location.key changes (i.e., new page).
   }, [location.key]);
 
+  const sidebarWidth = useMemo(() => pxToRem(100), []);
+
   return (
     <ControlPanelProvider>
       <ScrollContext.Provider value={{ scrollableContainerRef }}>
         <ThemeProvider theme={lightTheme}>
-          <div css={{ display: "flex", height: "100vh" }}>
-            <Navbar />
+          {/* 
+            THIS is now the main scrolling container.
+            - It gets the ref.
+            - It gets the overflowY.
+          */}
+          <div
+            ref={scrollableContainerRef}
+            css={{
+              display: "flex",
+              height: "100vh",
+              overflowY: "auto", // The scrollbar for this div will be on the far right.
+              scrollbarGutter: "stable", // Prevents layout shifts when scrollbar appears/disappears.
+            }}
+          >
             <div
-              ref={scrollableContainerRef}
               css={(theme) => ({
-                flex: 1,
-                overflowY: "auto",
                 background: theme.colors.background,
-                minHeight: 0,
+                borderRight: `1px solid ${theme.colors.separator}`,
+                padding: `${theme.spacing.sm}rem`,
+                display: "flex",
+                flexDirection: "column",
+                gap: `${theme.spacing.sm}rem`,
+                boxSizing: "border-box",
+                minWidth: sidebarWidth, // Fixed width for the sidebar
+                position: "fixed",
+                height: "100%",
+              })}
+            >
+              <Navbar /> {/* Assuming Navbar is just the content now */}
+            </div>
+
+            <div
+              css={(theme) => ({
+                flex: 1, // Takes up remaining space
+                background: theme.colors.background,
+                marginLeft: sidebarWidth, // Adjust to match sidebar width
               })}
             >
               <Outlet />
             </div>
-            <ControlPanel />
+            {/* ControlPanel also becomes sticky */}
+            <div
+              css={(theme) => ({
+                // Sticky positioning
+                position: "fixed",
+              })}
+            >
+              <ControlPanel />
+            </div>
           </div>
         </ThemeProvider>
       </ScrollContext.Provider>

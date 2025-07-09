@@ -284,7 +284,7 @@ function ModelList({
   if (aiModels.length === 0) {
     return (
       <div>
-        <h3>No models available for {selectedProvider.name}</h3>
+        <i>No models available for {selectedProvider.name}</i>
       </div>
     );
   }
@@ -312,10 +312,10 @@ function ModelList({
 
   return (
     <div>
-      <h3>Available {selectedProvider.name} models</h3>
       {aiModels.map((model) => (
         <div key={model.id}>
           <input
+            name="modelActiveCheckbox"
             type="checkbox"
             checked={model.active}
             onChange={(e) => {
@@ -488,7 +488,7 @@ export default function Providers() {
               )
             }
             css={{
-              marginBottom: `${theme.spacing.md}rem`,
+            /*   marginBottom: `${theme.spacing.md}rem`, */
             }}
           >
             {aiProviders.map((provider, i) => (
@@ -499,26 +499,27 @@ export default function Providers() {
           </select>
           <button
             css={{
-              marginBottom: `${theme.spacing.md}rem`,
+              /* marginBottom: `${theme.spacing.md}rem`, */
             }}
             onClick={() => setEditProviderModalOpen(true)}
           >
             Edit provider
           </button>
         </div>
+
+        {/* <h3>Create new {selectedProvider} key</h3> */}
+        {/*          */}
+        <h3>{selectedProvider?.name} keys</h3>
         <button
           css={
             {
-              //marginBottom: `${theme.spacing.md}rem`,
+              marginBottom: `${theme.spacing.md}rem`,
             }
           }
           onClick={() => setCreateNewApiKeyModalOpen(true)}
         >
           Create new {selectedProvider?.name} key
         </button>
-        {/* <h3>Create new {selectedProvider} key</h3> */}
-        {/*          */}
-        <h3>Existing {selectedProvider?.name} keys</h3>
         <div
           css={{
             display: "flex",
@@ -555,10 +556,22 @@ export default function Providers() {
                 </div>
               );
             })}
+          {apiKeys.filter(
+            (apiKey) => apiKey.provider_id === selectedProvider?.id
+          ).length === 0 && (
+            <div>
+              <i>No API keys available for {selectedProvider?.name}</i>
+            </div>
+          )}
         </div>
         {/* <h3>Available {selectedProvider?.name} models</h3> */}
+
+        <h3>{selectedProvider?.name} models</h3>
         <button
-          css={{ marginTop: `${theme.spacing.md}rem` }}
+          css={{
+            /* marginTop: `${theme.spacing.md}rem`, */
+            marginBottom: `${theme.spacing.md}rem`,
+          }}
           onClick={() => getModels(true)}
         >
           Refresh model list
