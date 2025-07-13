@@ -41,30 +41,26 @@ function App() {
     // The effect re-runs ONLY when the location.key changes (i.e., new page).
   }, [location.key]);
 
-  const sidebarWidth = useMemo(() => pxToRem(100), []);
-
   return (
     <ControlPanelProvider>
       <ScrollContext.Provider value={{ scrollableContainerRef }}>
         <ThemeProvider theme={lightTheme}>
           <div
-            ref={scrollableContainerRef}
             css={{
-              //background: "red",
               display: "flex",
               height: "100vh",
-              overflowY: "auto",
-              scrollbarGutter: "stable",
+              
               alignItems: "flex-start",
             }}
           >
-            <Navbar sidebarWidth={sidebarWidth} />
+            <Navbar />
 
             <div
               css={(theme) => ({
-                flex: 1, // Takes up remaining space
+                flex: 1,
+                height: "100%",
                 background: theme.colors.background,
-                //marginLeft: sidebarWidth, // Adjust to match sidebar width
+
               })}
             >
               <Outlet />

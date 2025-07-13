@@ -20,6 +20,7 @@ export default function Options() {
       css={{
         display: "flex",
         flexDirection: "row",
+        height:"100%"
         //width: "100%",
       }}
     >
@@ -58,6 +59,8 @@ export default function Options() {
         css={{
           paddingLeft: `${theme.spacing.sm}rem`,
           paddingRight: `${theme.spacing.sm}rem`,
+          flex: 1,
+          overflowY:"auto"
           //paddingBottom: `${theme.spacing.sm}rem`,
           //boxSizing: "border-box",
           //marginLeft: sidebarWidth,

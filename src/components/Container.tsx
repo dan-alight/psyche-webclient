@@ -3,7 +3,7 @@ import { pxToRem } from "@/utils"; // Assuming you created this
 import type { Theme } from "@emotion/react";
 
 // Define the possible size variants based on our theme's keys
-type ContainerVariant = keyof Theme["containerWidths"];
+export type ContainerVariant = keyof Theme["containerWidths"];
 
 // Define component props. We also accept any standard div props.
 interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {

@@ -2,7 +2,7 @@ import { useTheme } from "@emotion/react";
 import { Link, NavLink } from "react-router";
 import { pxToRem } from "@/utils"; // Assuming you have a utility function for px to rem conversion
 
-export default function Navbar({ sidebarWidth }: { sidebarWidth: string }) {
+export default function Navbar() {
   const theme = useTheme();
   return (
     <div

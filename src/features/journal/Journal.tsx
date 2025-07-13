@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useTheme } from "@emotion/react";
 import {
   useParams,
@@ -9,8 +9,9 @@ import {
 import { Container } from "@/components/Container";
 import type { JournalEntryRead, JournalEntryCreate } from "@/types/api";
 import { useJournalStore } from "@/features/journal/journal-store";
+import { ScrollContext } from "@/app/ScrollContext";
 
-const ITEMS_PER_PAGE = 30;
+const ITEMS_PER_PAGE = 10;
 
 export default function Journal() {
   const navigate = useNavigate();
@@ -32,6 +33,7 @@ export default function Journal() {
   const [navigateToEntry, setNavigateToEntry] = useState<number | null>(
     currentPage
   );
+  const { scrollableContainerRef } = useContext(ScrollContext);
 
   useEffect(() => {
     if (currentPage) {
@@ -81,114 +83,118 @@ export default function Journal() {
   const totalPages = Math.ceil(journalStats.count / ITEMS_PER_PAGE) || 1;
 
   return (
-    <Container>
-      <h1>Journal your life and manage previous entries</h1>
+    <div
+      ref={scrollableContainerRef}
+      css={{ overflowY: "auto", height: "100%" }}
+    >
+      <Container>
+        <h1>Journal</h1>
 
-      <textarea
-        name="logtextarea"
-        css={{ width: "100%" }}
-        rows={15}
-        placeholder="What do you want to say?"
-        onChange={(e) => setNewJournalEntry({ content: e.target.value })}
-        value={newJournalEntry.content}
-        
-      />
-      <button css={{ alignSelf: "self-start" }} onClick={handleCreate}>
-        Save
-      </button>
-
-      <h2>Previous journal entries</h2>
-
-      <div
-        css={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          marginBottom: `${theme.spacing.sm}rem`,
-          gap: `${theme.spacing.sm}rem`,
-        }}
-      >
-        <button
-          onClick={() => setSearchParams({ page: "1" })}
-          disabled={currentPage <= 1 || isLoading}
-        >
-          {"<<"}
-        </button>
-        <button
-          onClick={() => setSearchParams({ page: String(currentPage - 1) })}
-          disabled={currentPage <= 1 || isLoading}
-        >
-          {"<"}
-        </button>
-        <input
-          type="number"
-          value={navigateToEntry ?? ""}
-          onChange={(e) => {
-            const value = parseInt(e.target.value, 10);
-            if (!isNaN(value) && value >= 1 && value <= totalPages) {
-              setNavigateToEntry(value);
-            } else {
-              setNavigateToEntry(null);
-            }
-          }}
-          min={1}
-          max={totalPages}
-          disabled={isLoading}
-          css={{ textAlign: "center" }}
-          name="navigateToEntry"
+        <textarea
+          name="logtextarea"
+          css={{ width: "100%" }}
+          rows={15}
+          placeholder="What do you want to say?"
+          onChange={(e) => setNewJournalEntry({ content: e.target.value })}
+          value={newJournalEntry.content}
         />
-        {"/"}
-        <span>{totalPages}</span>
-        <button
-          css={{}}
-          onClick={(e) => {
-            setSearchParams({ page: String(navigateToEntry) });
+        <button css={{ alignSelf: "self-start" }} onClick={handleCreate}>
+          Save
+        </button>
+
+        <h2>Previous entries</h2>
+
+        <div
+          css={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            marginBottom: `${theme.spacing.sm}rem`,
+            gap: `${theme.spacing.sm}rem`,
           }}
         >
-          Go
-        </button>
-        <button
-          onClick={() => setSearchParams({ page: String(currentPage + 1) })}
-          disabled={currentPage >= totalPages || isLoading}
-        >
-          {">"}
-        </button>
-        <button
-          onClick={() => setSearchParams({ page: String(totalPages) })}
-          disabled={currentPage >= totalPages || isLoading}
-        >
-          {">>"}
-        </button>
-      </div>
-
-      {isLoading && journalEntries.length === 0 && (
-        <div>Loading entries...</div>
-      )}
-
-      <div
-        css={{
-          display: "flex",
-          flexDirection: "column",
-          //gap: `${theme.spacing.sm}rem`,
-        }}
-      >
-        {journalEntries.map((journalEntry) => (
-          <div key={journalEntry.id}>
-            <div css={{ background: theme.colors.surface }}>
-              {journalEntry.content}
-            </div>
-            <button
-              onClick={() =>
-                navigate(`/journal/${journalEntry.id}`, {
-                  state: { fromList: true, fromPage: currentPage },
-                })
+          <button
+            onClick={() => setSearchParams({ page: "1" })}
+            disabled={currentPage <= 1 || isLoading}
+          >
+            {"<<"}
+          </button>
+          <button
+            onClick={() => setSearchParams({ page: String(currentPage - 1) })}
+            disabled={currentPage <= 1 || isLoading}
+          >
+            {"<"}
+          </button>
+          <input
+            type="number"
+            value={navigateToEntry ?? ""}
+            onChange={(e) => {
+              const value = parseInt(e.target.value, 10);
+              if (!isNaN(value) && value >= 1 && value <= totalPages) {
+                setNavigateToEntry(value);
+              } else {
+                setNavigateToEntry(null);
               }
-            >
-              Manage
-            </button>
-          </div>
-        ))}
-      </div>
-    </Container>
+            }}
+            min={1}
+            max={totalPages}
+            disabled={isLoading}
+            css={{ textAlign: "center" }}
+            name="navigateToEntry"
+          />
+          {"/"}
+          <span>{totalPages}</span>
+          <button
+            css={{}}
+            onClick={(e) => {
+              setSearchParams({ page: String(navigateToEntry) });
+            }}
+          >
+            Go
+          </button>
+          <button
+            onClick={() => setSearchParams({ page: String(currentPage + 1) })}
+            disabled={currentPage >= totalPages || isLoading}
+          >
+            {">"}
+          </button>
+          <button
+            onClick={() => setSearchParams({ page: String(totalPages) })}
+            disabled={currentPage >= totalPages || isLoading}
+          >
+            {">>"}
+          </button>
+        </div>
+
+        {isLoading && journalEntries.length === 0 && (
+          <div>Loading entries...</div>
+        )}
+
+        <div
+          css={{
+            display: "flex",
+            flexDirection: "column",
+            //gap: `${theme.spacing.sm}rem`,
+          }}
+        >
+          {journalEntries.map((journalEntry) => (
+            <div key={journalEntry.id}>
+              <div css={{ background: theme.colors.surface }}>
+                {journalEntry.content}
+              </div>
+              <button
+                onClick={() =>
+                  navigate(`/journal/${journalEntry.id}`, {
+                    state: { fromList: true, fromPage: currentPage },
+                  })
+                }
+              >
+                Manage
+              </button>
+            </div>
+          ))}
+        </div>
+      </Container>
+    </div>
   );
 }
