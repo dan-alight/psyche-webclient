@@ -7,7 +7,7 @@ import type {
   ApiKeyUpdate,
   ApiKeyRead,
 } from "@/types/api";
-
+import SecondaryNavbar from "@/components/SecondaryNavbar";
 import { useTheme } from "@emotion/react";
 import { pxToRem } from "@/utils";
 import { Container } from "@/components/Container";
@@ -18,28 +18,14 @@ export default function Options() {
   return (
     <div
       css={{
-        flex:1,
+        flex: 1,
         display: "flex",
         flexDirection: "row",
-        height:"100%"
+        height: "100%",
       }}
     >
-      <div
-        css={{
-          position: "sticky",
-          top: 0,
-          maxWidth: pxToRem(200),
-          width: "100%",
-
-          padding: `${theme.spacing.sm}rem`,
-          borderRight: `1px solid ${theme.colors.separator}`,
-          display: "flex",
-          flexDirection: "column",
-          gap: `${theme.spacing.sm}rem`,
-          boxSizing: "border-box",
-          background: theme.colors.background,
-        }}
-      >
+      {" "}
+      <SecondaryNavbar>
         <NavLink
           to="/options"
           end
@@ -52,14 +38,13 @@ export default function Options() {
         >
           Providers
         </NavLink>
-      </div>
-
+      </SecondaryNavbar>
       <div
         css={{
           paddingLeft: `${theme.spacing.sm}rem`,
           paddingRight: `${theme.spacing.sm}rem`,
           flex: 1,
-          overflowY:"auto"
+          overflowY: "auto",
           //paddingBottom: `${theme.spacing.sm}rem`,
           //boxSizing: "border-box",
           //marginLeft: sidebarWidth,

@@ -5,8 +5,6 @@ import { ScrollContext } from "@/app/ScrollContext";
 import Navbar from "@/app/Navbar";
 import { lightTheme, darkTheme } from "@/app/themes";
 import { ControlPanelProvider } from "@/contexts/ControlPanelContext";
-import { ControlPanel } from "@/app/ControlPanel";
-import { pxToRem } from "@/utils";
 
 // This map still stores the scroll positions.
 const scrollPositions = new Map<string, number>();
@@ -53,7 +51,6 @@ function App() {
           >
             <Navbar />
             <Outlet />
-            <ControlPanel />
           </div>
         </ThemeProvider>
       </ScrollContext.Provider>

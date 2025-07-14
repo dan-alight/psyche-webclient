@@ -1,15 +1,18 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { css, useTheme } from "@emotion/react";
 import config from "@/config";
 import { Container, type ContainerVariant } from "@/components/Container";
 import { pxToRem } from "@/utils";
+import { useControlPanel } from "@/contexts/ControlPanelContext";
+import SecondaryNavbar from "@/components/SecondaryNavbar";
+import ControlPanel from "@/app/ControlPanel";
 
 export default function Chat() {
   const theme = useTheme();
   const websocket = useRef<WebSocket | null>(null);
   const [messageText, setMessageText] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
+  const { setPanelContent } = useControlPanel();
   const [messages, setMessages] = useState(
     Array.from({ length: 50 }, (_, i) => `Message number ${i + 1}`)
   );
@@ -36,6 +39,7 @@ export default function Chat() {
       ws.onclose = null;
       ws.close();
       websocket.current = null;
+      setPanelContent(null);
     };
   }, []);
 
@@ -53,99 +57,120 @@ export default function Chat() {
   const verticalPadding = `${theme.spacing.sm}rem`;
 
   return (
-    <div
-      css={{
-        display: "flex",
-        flexDirection: "column",
-        height: "100%",
-        scrollbarGutter: "stable",
-        flex: 1,
-      }}
-    >
+    <>
+      <SecondaryNavbar></SecondaryNavbar>
       <div
         css={{
+          width: "100%",
+          overflowX: "auto",
           flex: 1,
-          overflowY: "auto",
+          display: "flex",
+          flexDirection: "column",
         }}
       >
-        <Container
-          variant={containerVariant}
+        <div
           css={{
             display: "flex",
             flexDirection: "column",
-            gap: verticalPadding,
-            paddingLeft: `${horizontalPadding}`,
-            paddingRight: `${horizontalPadding}`,
-            paddingTop: `${verticalPadding}`,
-            width: `calc(100% - (${horizontalPadding} * 2))`,
+            height: "100%",
+            flex: 1,
+            minWidth: "min-content"
           }}
         >
-          {messages.map((msg, index) => (
-            <div
-              key={index}
-              css={{
-                padding: verticalPadding,
-                border: `1px solid ${theme.colors.border}`,
-              }}
-            >
-              {msg}
-            </div>
-          ))}
-          <div ref={messagesEndRef} />
-        </Container>
-      </div>
-      <div
-        css={{
-          scrollbarGutter: "stable",
-          width: "100%",
-          overflowY: "hidden",
-          paddingBottom: verticalPadding,
-        }}
-      >
-        <form
-          css={{
-            display: "flex",
-            paddingLeft: `${horizontalPadding}`,
-            paddingRight: `${horizontalPadding}`,
-            maxWidth: pxToRem(theme.containerWidths[containerVariant]),
-            margin: "0 auto",
-            width: `calc(100% - (${horizontalPadding} * 2))`,
-          }}
-          name="sendMessageForm"
-          onSubmit={(e) => {
-            e.preventDefault();
-            sendMessage();
-          }}
-        >
-          <input
+          <div
             css={{
               flex: 1,
-              padding: `${theme.spacing.md}rem`,
-              fontSize: `${theme.typography.fontSize.sm}rem`,
-            }}
-            name="messageInputField"
-            type="text"
-            required
-            placeholder="Enter your message"
-            value={messageText}
-            onChange={(e) => setMessageText(e.target.value)}
-          />
-          <button
-            type="submit"
-            css={{
-              background: theme.colors.primary,
-              padding: `${theme.spacing.sm}rem ${theme.spacing.md}rem`,
-              fontSize: `${theme.typography.fontSize.lg}rem`,
-              cursor: "pointer",
-              "&:hover": {
-                filter: "brightness(95%)",
-              },
+              overflowY: "auto",
+              scrollbarGutter: "stable",
+              
             }}
           >
-            Send
-          </button>
-        </form>
+            <Container
+              variant={containerVariant}
+              css={{
+                display: "flex",
+                flexDirection: "column",
+                gap: verticalPadding,
+                paddingLeft: `${horizontalPadding}`,
+                paddingRight: `${horizontalPadding}`,
+                paddingTop: `${verticalPadding}`,
+                width: `calc(100% - (${horizontalPadding} * 2))`,
+                overflowX: "hidden",
+
+              }}
+            >
+              {messages.map((msg, index) => (
+                <div
+                  key={index}
+                  css={{
+                    padding: verticalPadding,
+                    border: `1px solid ${theme.colors.border}`,
+                  }}
+                >
+                  {msg}
+                </div>
+              ))}
+              <div ref={messagesEndRef} />
+            </Container>
+          </div>
+          <div
+            css={{
+              scrollbarGutter: "stable",
+              width: "100%",
+              overflowY: "hidden",
+              overflowX:"hidden",
+              paddingBottom: verticalPadding,
+            }}
+          >
+            <form
+              css={{
+                display: "flex",
+                paddingLeft: `${horizontalPadding}`,
+                paddingRight: `${horizontalPadding}`,
+                maxWidth: pxToRem(theme.containerWidths[containerVariant]),
+                margin: "0 auto",
+                width: `calc(100% - (${horizontalPadding} * 2))`,
+              }}
+              name="sendMessageForm"
+              onSubmit={(e) => {
+                e.preventDefault();
+                sendMessage();
+              }}
+            >
+              <input
+                css={{
+                  flex: 1,
+                  padding: `${theme.spacing.md}rem`,
+                  fontSize: `${theme.typography.fontSize.sm}rem`,
+                }}
+                name="messageInputField"
+                type="text"
+                required
+                placeholder="Enter your message"
+                value={messageText}
+                onChange={(e) => setMessageText(e.target.value)}
+              />
+              <button
+                type="submit"
+                css={{
+                  background: theme.colors.primary,
+                  padding: `${theme.spacing.sm}rem ${theme.spacing.md}rem`,
+                  fontSize: `${theme.typography.fontSize.lg}rem`,
+                  cursor: "pointer",
+                  "&:hover": {
+                    filter: "brightness(95%)",
+                  },
+                }}
+              >
+                Send
+              </button>
+            </form>
+          </div>
+        </div>
       </div>
-    </div>
+      <ControlPanel>
+        <div>hello world</div>
+      </ControlPanel>
+    </>
   );
 }
