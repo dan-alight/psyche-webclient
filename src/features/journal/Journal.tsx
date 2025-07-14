@@ -85,7 +85,7 @@ export default function Journal() {
   return (
     <div
       ref={scrollableContainerRef}
-      css={{ overflowY: "auto", height: "100%" }}
+      css={{ overflowY: "auto", height: "100%", flex: 1 }}
     >
       <Container>
         <h1>Journal</h1>

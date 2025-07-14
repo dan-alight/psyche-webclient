@@ -49,31 +49,11 @@ function App() {
             css={{
               display: "flex",
               height: "100vh",
-              
-              alignItems: "flex-start",
             }}
           >
             <Navbar />
-
-            <div
-              css={(theme) => ({
-                flex: 1,
-                height: "100%",
-                background: theme.colors.background,
-
-              })}
-            >
-              <Outlet />
-            </div>
-            {/* ControlPanel also becomes sticky */}
-            <div
-              css={(theme) => ({
-                // Sticky positioning
-                position: "fixed",
-              })}
-            >
-              <ControlPanel />
-            </div>
+            <Outlet />
+            <ControlPanel />
           </div>
         </ThemeProvider>
       </ScrollContext.Provider>

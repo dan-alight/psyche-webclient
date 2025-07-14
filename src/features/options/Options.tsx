@@ -18,17 +18,16 @@ export default function Options() {
   return (
     <div
       css={{
+        flex:1,
         display: "flex",
         flexDirection: "row",
         height:"100%"
-        //width: "100%",
       }}
     >
       <div
         css={{
           position: "sticky",
           top: 0,
-          height: "100vh",
           maxWidth: pxToRem(200),
           width: "100%",
 

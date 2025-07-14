@@ -1,26 +1,11 @@
 import { useState, useEffect, useRef } from "react";
-import { css, useTheme, Global } from "@emotion/react";
+import { css, useTheme } from "@emotion/react";
 import config from "@/config";
 import { Container, type ContainerVariant } from "@/components/Container";
 import { pxToRem } from "@/utils";
 
-const defaultTheme = {
-  colors: {
-    primary: "#61dafb",
-    secondary: "#f0f2f5",
-    background: "#ffffff",
-    text: "#282c34",
-    border: "#cccccc",
-  },
-  spacing: {
-    sm: "8px",
-    md: "16px",
-    lg: "24px",
-  },
-};
-
 export default function Chat() {
-  const theme = useTheme() || defaultTheme;
+  const theme = useTheme();
   const websocket = useRef<WebSocket | null>(null);
   const [messageText, setMessageText] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -40,7 +25,6 @@ export default function Chat() {
     ws.onmessage = (event) => {
       const res = JSON.parse(event.data);
       console.log("WebSocket res:", res);
-      // setMessages(prev => [...prev, res.content]);
     };
     ws.onerror = (error) => console.error("WebSocket error:", error);
     ws.onclose = (e) => console.log("WebSocket connection closed:", e.reason);
@@ -65,23 +49,23 @@ export default function Chat() {
 
   const containerVariant: ContainerVariant = "content";
 
+  const horizontalPadding = `${theme.spacing.sm}rem`;
+  const verticalPadding = `${theme.spacing.sm}rem`;
+
   return (
-    // 1. This is the main container. It uses Flexbox to position its children.
-    // It takes up 100% of the height given by the <Outlet> container in App.tsx.
     <div
       css={{
         display: "flex",
         flexDirection: "column",
-        height: "100%", // This is key!
+        height: "100%",
         scrollbarGutter: "stable",
+        flex: 1,
       }}
     >
-      {/* 2. This is the message list. It grows to fill all available space
-           and handles its own scrolling. This PREVENTS the main page scrollbar from appearing. */}
       <div
         css={{
           flex: 1,
-          overflowY: "auto", // This makes ONLY this container scrollable.
+          overflowY: "auto",
         }}
       >
         <Container
@@ -89,50 +73,43 @@ export default function Chat() {
           css={{
             display: "flex",
             flexDirection: "column",
-            gap: `${theme.spacing.sm}rem`,
-            padding: `${theme.spacing.sm}rem`,
-            //marginBottom: `${theme.spacing.sm}rem`,
+            gap: verticalPadding,
+            paddingLeft: `${horizontalPadding}`,
+            paddingRight: `${horizontalPadding}`,
+            paddingTop: `${verticalPadding}`,
+            width: `calc(100% - (${horizontalPadding} * 2))`,
           }}
         >
           {messages.map((msg, index) => (
             <div
               key={index}
               css={{
-                padding: `${theme.spacing.sm}rem`,
+                padding: verticalPadding,
                 border: `1px solid ${theme.colors.border}`,
-                marginBottom: theme.spacing.sm, // Add space between messages
               }}
             >
               {msg}
             </div>
           ))}
+          <div ref={messagesEndRef} />
         </Container>
       </div>
-
-      {/* 3. This is the form container. It no longer needs to be sticky.
-           Flexbox places it naturally at the bottom. */}
       <div
         css={{
           scrollbarGutter: "stable",
           width: "100%",
           overflowY: "hidden",
-   //marginBottom: 8,    
-   paddingLeft:`${theme.spacing.sm}rem`,
-   paddingRight:`${theme.spacing.sm}rem`,
-   paddingBottom:`${theme.spacing.sm}rem`,
-   boxSizing:"border-box"
+          paddingBottom: verticalPadding,
         }}
       >
         <form
           css={{
             display: "flex",
-            padding: `${theme.spacing.md} ${theme.spacing.lg}`,
+            paddingLeft: `${horizontalPadding}`,
+            paddingRight: `${horizontalPadding}`,
             maxWidth: pxToRem(theme.containerWidths[containerVariant]),
-            width: "100%",
-
-            //gap: theme.spacing.lg,
-
             margin: "0 auto",
+            width: `calc(100% - (${horizontalPadding} * 2))`,
           }}
           name="sendMessageForm"
           onSubmit={(e) => {
@@ -144,7 +121,7 @@ export default function Chat() {
             css={{
               flex: 1,
               padding: `${theme.spacing.md}rem`,
-              fontSize: `${theme.typography.fontSize.lg}rem`,
+              fontSize: `${theme.typography.fontSize.sm}rem`,
             }}
             name="messageInputField"
             type="text"
@@ -157,8 +134,7 @@ export default function Chat() {
             type="submit"
             css={{
               background: theme.colors.primary,
-              //border: 0,
-              padding: `${theme.spacing.sm} ${theme.spacing.md}`,
+              padding: `${theme.spacing.sm}rem ${theme.spacing.md}rem`,
               fontSize: `${theme.typography.fontSize.lg}rem`,
               cursor: "pointer",
               "&:hover": {
