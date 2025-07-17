@@ -57,7 +57,7 @@ export default function Journal() {
     }
     setNewJournalEntry({ content: "" });
   };
-
+  const maxPage = Math.ceil(journalStats.count / ITEMS_PER_PAGE) || 1;
   useEffect(() => {
     if (!initialized) {
       fetchStats();
@@ -65,7 +65,7 @@ export default function Journal() {
     }
 
     // Determine the target page from the URL, defaulting to the last page if not present
-    const maxPage = Math.ceil(journalStats.count / ITEMS_PER_PAGE) || 1;
+
     let targetPage = parseInt(searchParams.get("page") || "0", 10);
     if (targetPage < 1 || targetPage > maxPage) {
       // If no valid page in URL, calculate the most recent page
@@ -78,7 +78,11 @@ export default function Journal() {
     }
   }, [initialized, searchParams]);
 
-  if (!currentPage) return null;
+  if (
+    !currentPage ||
+    (searchParams.get("page") === null && currentPage !== maxPage)
+  )
+    return null;
 
   const totalPages = Math.ceil(journalStats.count / ITEMS_PER_PAGE) || 1;
 
