@@ -35,7 +35,7 @@ export interface AiModelRead {
   active: boolean;
 }
 
-export interface AiModelUpdate {  
+export interface AiModelUpdate {
   active?: boolean;
 }
 
@@ -51,4 +51,19 @@ export interface JournalEntryCreate {
 
 export interface JournalEntryStats {
   count: number;
+}
+
+export interface ConversationRead {
+  id: number;
+  title: string;
+  last_updated: string;
+}
+
+export interface ConversationMessageRead {
+  id: number;
+  conversation_id: number;
+  parent_message_id?: number;
+  content: string;
+  role: string;
+  created_at: string;
 }

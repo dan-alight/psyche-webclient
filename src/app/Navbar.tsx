@@ -22,8 +22,7 @@ export default function Navbar() {
       })}
     >
       <NavLink
-        to="/"
-        end
+        to="/chat"
         style={({ isActive }) => ({
           color: isActive
             ? theme.colors.link.active
@@ -31,7 +30,7 @@ export default function Navbar() {
           fontWeight: isActive ? "bold" : "normal",
         })}
       >
-        Home
+        Chat
       </NavLink>
       <NavLink
         to="journal"
