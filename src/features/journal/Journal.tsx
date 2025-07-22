@@ -7,7 +7,11 @@ import {
   useSearchParams,
 } from "react-router";
 import { Container } from "@/components/Container";
-import type { JournalEntryRead, JournalEntryCreate } from "@/types/api";
+import type {
+  JournalEntryRead,
+  JournalEntryCreate,
+  JournalEntryUpdate,
+} from "@/types/api";
 import { useJournalStore } from "@/features/journal/journal-store";
 import { ScrollContext } from "@/app/ScrollContext";
 
@@ -26,10 +30,14 @@ export default function Journal() {
     fetchEntries,
     currentPage,
     createEntry,
+    updateEntry,
+    deleteEntry,
   } = useJournalStore();
   const [newJournalEntry, setNewJournalEntry] = useState<JournalEntryCreate>({
     content: "",
   });
+  const [editingEntryId, setEditingEntryId] = useState<number | null>(null);
+  const [editingContent, setEditingContent] = useState("");
   const [navigateToEntry, setNavigateToEntry] = useState<number | null>(
     currentPage
   );
@@ -38,6 +46,7 @@ export default function Journal() {
   useEffect(() => {
     if (currentPage) {
       setNavigateToEntry(currentPage);
+      cancelEditing();
     }
   }, [currentPage]);
 
@@ -56,6 +65,31 @@ export default function Journal() {
       fetchEntries(subsequentMaxPage, ITEMS_PER_PAGE);
     }
     setNewJournalEntry({ content: "" });
+  };
+
+  const handleUpdate = async (id: number) => {
+    if (!editingContent.trim()) return;
+    await updateEntry(id, { content: editingContent });
+    setEditingEntryId(null);
+    setEditingContent("");
+  };
+  const handleDelete = async (entry: JournalEntryRead) => {
+    if (!window.confirm("Are you sure you want to delete this entry?")) return;
+    await deleteEntry(entry.id);
+    if (currentPage && journalEntries.length === 1) {
+      // If we just deleted the last entry on the current page, go to the previous page
+      const newPage = currentPage > 1 ? currentPage - 1 : 1;
+      setSearchParams({ page: String(newPage) });
+    }
+  };
+  const startEditing = (entry: JournalEntryRead) => {
+    setEditingEntryId(entry.id);
+    setEditingContent(entry.content);
+  };
+
+  const cancelEditing = () => {
+    setEditingEntryId(null);
+    setEditingContent("");
   };
   const maxPage = Math.ceil(journalStats.count / ITEMS_PER_PAGE) || 1;
   useEffect(() => {
@@ -182,19 +216,56 @@ export default function Journal() {
           }}
         >
           {journalEntries.map((journalEntry) => (
-            <div key={journalEntry.id}>
-              <div css={{ background: theme.colors.surface }}>
-                {journalEntry.content}
-              </div>
-              <button
-                onClick={() =>
-                  navigate(`/journal/${journalEntry.id}`, {
-                    state: { fromList: true, fromPage: currentPage },
-                  })
-                }
-              >
-                Manage
-              </button>
+            <div
+              key={journalEntry.id}
+              css={{
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              {editingEntryId === journalEntry.id ? (
+                <textarea
+                  css={{ width: "100%" }}
+                  rows={10}
+                  value={editingContent}
+                  onChange={(e) => setEditingContent(e.target.value)}
+                />
+              ) : (
+                <div
+                  css={{
+                    background: theme.colors.surface,
+                    whiteSpace: "pre-wrap",
+                  }}
+                >
+                  {journalEntry.content}
+                </div>
+              )}
+              {editingEntryId === journalEntry.id ? (
+                <div>
+                  <button onClick={() => handleUpdate(journalEntry.id)}>
+                    Save
+                  </button>
+                  <button onClick={cancelEditing}>Cancel</button>
+                </div>
+              ) : (
+                <div>
+                  <button onClick={() => startEditing(journalEntry)}>
+                    Edit
+                  </button>
+                  <button onClick={() => handleDelete(journalEntry)}>
+                    Delete
+                  </button>
+                  {/* <button
+                    onClick={() =>
+                      navigate(`/journal/${journalEntry.id}`, {
+                        state: { fromList: true, fromPage: currentPage },
+                      })
+                    }
+                  >
+                    Manage
+                  </button> */}
+                </div>
+              )}
             </div>
           ))}
         </div>

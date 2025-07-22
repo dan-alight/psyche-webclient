@@ -24,8 +24,8 @@ export interface ApiKeyCreate {
 }
 
 export interface ApiKeyUpdate {
-  new_name?: string;
-  new_active?: boolean;
+  name?: string;
+  active?: boolean;
 }
 
 export interface AiModelRead {
@@ -49,6 +49,10 @@ export interface JournalEntryCreate {
   content: string;
 }
 
+export interface JournalEntryUpdate {
+  content?: string;
+}
+
 export interface JournalEntryStats {
   count: number;
 }
@@ -66,4 +70,8 @@ export interface ConversationMessageRead {
   content: string;
   role: string;
   created_at: string;
+}
+
+export interface ConversationUpdate {
+  title?: string | null;
 }

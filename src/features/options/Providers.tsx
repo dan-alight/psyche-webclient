@@ -276,9 +276,6 @@ function ModelList({
   setAiModels: React.Dispatch<React.SetStateAction<AiModelRead[]>>;
   selectedProvider: AiProviderRead | null;
 }) {
-  useEffect(() => {
-    console.log("Models updated:", aiModels);
-  }, [aiModels]);
 
   if (!selectedProvider) return null;
   if (aiModels.length === 0) {
@@ -421,14 +418,14 @@ export default function Providers() {
 
   const toggleApiKeyActive = async (apiKey: ApiKeyRead) => {
     const update: ApiKeyUpdate = {
-      new_active: apiKey.active ? false : true,
+      active: apiKey.active ? false : true,
     };
     updateApiKey(apiKey.id, update);
   };
 
   const changeApiKeyName = async (apiKey: ApiKeyRead, new_name: string) => {
     const update: ApiKeyUpdate = {
-      new_name: new_name,
+      name: new_name,
     };
     updateApiKey(apiKey.id, update);
   };
@@ -451,6 +448,7 @@ export default function Providers() {
           display: "flex",
           flexDirection: "column",
           alignItems: "flex-start",
+          
         }}
       >
         <CreateNewProviderModal

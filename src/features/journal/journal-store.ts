@@ -4,6 +4,7 @@ import type {
   JournalEntryRead,
   JournalEntryCreate,
   JournalEntryStats,
+  JournalEntryUpdate,
 } from "@/types/api";
 import config from "@/config";
 
@@ -25,6 +26,11 @@ interface JournalState {
   fetchStats: () => Promise<void>;
   fetchEntries: (page: number, itemsPerPage: number) => Promise<void>;
   createEntry: (newEntryData: JournalEntryCreate) => Promise<void>;
+  updateEntry: (
+    id: number,
+    updatedEntryData: JournalEntryUpdate
+  ) => Promise<void>;
+  deleteEntry: (id: number) => Promise<void>;
   getEntryById: (id: number) => JournalEntryRead | undefined;
 }
 
@@ -54,7 +60,6 @@ export const useJournalStore = create<JournalState>((set, get) => ({
         page: String(page),
         itemsPerPage: String(itemsPerPage),
       });
-      console.log(`Zustand: getting entries for page ${page}`);
       const res = await fetch(`${config.HTTP_URL}/journal-entries?${params}`);
       const json: PaginatedResponse = await res.json();
       set({
@@ -85,6 +90,32 @@ export const useJournalStore = create<JournalState>((set, get) => ({
     });
   },
 
+  updateEntry: async (id: number, updatedEntryData: JournalEntryUpdate) => {
+    const res = await fetch(`${config.HTTP_URL}/journal-entries/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedEntryData),
+    });
+    const updatedEntry: JournalEntryRead = await res.json();
+    console.log("Updated entry:", updatedEntry);
+    set((state) => ({
+      journalEntries: state.journalEntries.map((entry) =>
+        entry.id === id ? { ...entry, ...updatedEntry } : entry
+      ),
+    }));
+  },
+  deleteEntry: async (id: number) => {
+    await fetch(`${config.HTTP_URL}/journal-entries/${id}`, {
+      method: "DELETE",
+    });
+    set((state) => ({
+      journalEntries: state.journalEntries.filter((entry) => entry.id !== id),
+      journalStats: {
+        ...state.journalStats,
+        count: state.journalStats.count - 1,
+      },
+    }));
+  },
   getEntryById: (id: number) => {
     return get().journalEntries.find((entry) => entry.id === id);
   },
