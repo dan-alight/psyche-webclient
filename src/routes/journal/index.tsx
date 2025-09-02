@@ -1,6 +1,5 @@
 // src/routes/journal.tsx
 import { useState, useEffect, useContext, use } from "react";
-import { useTheme } from "@emotion/react";
 import {
   createFileRoute,
   useNavigate,
@@ -15,6 +14,7 @@ import type {
   JournalEntryStats,
 } from "@/types/api";
 import config from "@/config";
+import styles from "./index.module.css";
 
 export const Route = createFileRoute("/journal/")({
   component: Journal,
@@ -89,7 +89,6 @@ function PaginationControls({
   totalPages,
   isFetching,
 }: PaginationControlsProps) {
-  const theme = useTheme();
   const navigate = useNavigate({ from: Route.fullPath });
 
   const [navigateToEntry, setNavigateToEntry] = useState<number | undefined>(
@@ -97,15 +96,7 @@ function PaginationControls({
   );
 
   return (
-    <div
-      css={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        marginBottom: `${theme.spacing.sm}rem`,
-        gap: `${theme.spacing.sm}rem`,
-      }}
-    >
+    <div className={styles.paginationControls}>
       <button
         onClick={() => navigate({ search: { page: 1 } })}
         disabled={currentPage <= 1 || isFetching}
@@ -138,7 +129,7 @@ function PaginationControls({
         min={1}
         max={totalPages}
         disabled={isFetching}
-        css={{ textAlign: "center" }}
+        className={styles.navigateToEntry}
         name="navigateToEntry"
       />
       {"/"}
@@ -170,7 +161,6 @@ function PaginationControls({
 }
 
 function Journal() {
-  const theme = useTheme();
   const navigate = useNavigate({ from: Route.fullPath });
   const { page: pageSearchParam } = useSearch({ from: Route.fullPath });
   const queryClient = useQueryClient();
@@ -277,26 +267,19 @@ function Journal() {
   if (isError) return <div>Error loading entries</div>;
 
   return (
-    <div
-      css={{
-        overflowY: "auto",
-        height: "100%",
-        flex: 1,
-        scrollbarGutter: "stable",
-      }}
-    >
+    <div className={styles.journalContainer}>
       <Container>
         <h1>Journal</h1>
 
         <textarea
           name="logtextarea"
-          css={{ width: "100%" }}
+          className={styles.logTextarea}
           rows={15}
           placeholder="What do you want to say?"
           onChange={(e) => setNewJournalEntry({ content: e.target.value })}
           value={newJournalEntry.content}
         />
-        <button css={{ alignSelf: "self-start" }} onClick={handleCreate}>
+        <button className={styles.saveButton} onClick={handleCreate}>
           Save
         </button>
 
@@ -309,34 +292,18 @@ function Journal() {
           isFetching={isFetching}
         />
 
-        <div
-          css={{
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
+        <div className={styles.entriesContainer}>
           {journalEntries?.data.map((journalEntry) => (
-            <div
-              key={journalEntry.id}
-              css={{
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
+            <div key={journalEntry.id} className={styles.entryContainer}>
               {editingEntryId === journalEntry.id ? (
                 <textarea
-                  css={{ width: "100%" }}
+                  className={styles.editingTextarea}
                   rows={10}
                   value={editingContent}
                   onChange={(e) => setEditingContent(e.target.value)}
                 />
               ) : (
-                <div
-                  css={{
-                    background: theme.colors.surface,
-                    whiteSpace: "pre-wrap",
-                  }}
-                >
+                <div className={styles.entryContent}>
                   {journalEntry.content}
                 </div>
               )}

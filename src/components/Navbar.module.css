@@ -1,0 +1,15 @@
+
+.navbar {
+  background: var(--color-background);
+  border-right: 1px solid var(--color-separator);
+  padding: var(--spacing-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  box-sizing: border-box;
+  max-width: 6.25rem;
+  width: 100%;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}

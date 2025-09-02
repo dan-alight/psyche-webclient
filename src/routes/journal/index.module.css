@@ -1,0 +1,46 @@
+
+.paginationControls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: var(--spacing-sm);
+  gap: var(--spacing-sm);
+}
+
+.navigateToEntry {
+  text-align: center;
+}
+
+.journalContainer {
+  overflow-y: auto;
+  height: 100%;
+  flex: 1;
+  scrollbar-gutter: stable;
+}
+
+.logTextarea {
+  width: 100%;
+}
+
+.saveButton {
+  align-self: self-start;
+}
+
+.entriesContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.entryContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.editingTextarea {
+  width: 100%;
+}
+
+.entryContent {
+  background: var(--color-surface);
+  white-space: pre-wrap;
+}

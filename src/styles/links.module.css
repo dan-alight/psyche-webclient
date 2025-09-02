@@ -1,0 +1,9 @@
+.link {
+  font-weight: normal;
+  color: var(--color-link-default);
+}
+
+.link[data-status="active"] {
+  font-weight: bold;
+  color: var(--color-link-active);
+}

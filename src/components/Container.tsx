@@ -1,11 +1,7 @@
-import { useTheme } from "@emotion/react";
-import { pxToRem } from "@/utils"; // Assuming you created this
-import type { Theme } from "@emotion/react";
+import styles from "./Container.module.css";
 
-// Define the possible size variants based on our theme's keys
-export type ContainerVariant = keyof Theme["containerWidths"];
+export type ContainerVariant = "narrow" | "content" | "wide" | "modal";
 
-// Define component props. We also accept any standard div props.
 interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: ContainerVariant;
   children?: React.ReactNode;
@@ -14,19 +10,16 @@ interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
 export const Container: React.FC<ContainerProps> = ({
   variant = "content",
   children,
+  className,
   ...rest
 }) => {
-  const theme = useTheme();
-
-  // Create the styles using the css function
-  const containerStyles = {
-    width: "100%",
-    margin: "0 auto",
-    maxWidth: pxToRem(theme.containerWidths[variant]),
-  };
+  const variantClass = styles[variant];
+  const combinedClassName = [styles.container, variantClass, className]
+    .filter(Boolean)
+    .join(" ");
 
   return (
-    <div css={containerStyles} {...rest}>
+    <div className={combinedClassName} {...rest}>
       {children}
     </div>
   );

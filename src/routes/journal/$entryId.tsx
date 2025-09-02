@@ -1,5 +1,4 @@
 import { useMemo, useEffect } from "react";
-import { useTheme } from "@emotion/react";
 import {
   createFileRoute,
   useParams,
@@ -10,6 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import type { JournalEntryRead } from "@/types/api";
 import config from "@/config";
 import { Container } from "@/components/Container";
+import styles from "./$entryId.module.css";
 
 export const Route = createFileRoute("/journal/$entryId")({
   component: JournalEntryDetail,
@@ -27,7 +27,6 @@ async function fetchEntry(id: string): Promise<JournalEntryRead> {
 }
 
 function JournalEntryDetail() {
-  const theme = useTheme();
   const { entryId } = useParams({ from: "/journal/$entryId" });
   const navigate = useNavigate({ from: "/journal/$entryId" });
   const { fromList } = useSearch({ from: "/journal/$entryId" });
@@ -54,7 +53,7 @@ function JournalEntryDetail() {
 
   return (
     <Container>
-      <div css={{ background: theme.colors.surface }}>
+      <div className={styles.content}>
         <p>{entry.content}</p>
       </div>
       <span>{entry.created_at}</span>

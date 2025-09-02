@@ -1,5 +1,4 @@
 // src/routes/chat.tsx
-import { useTheme } from "@emotion/react";
 import {
   Outlet,
   Link,
@@ -11,6 +10,8 @@ import SecondaryNavbar from "@/components/SecondaryNavbar";
 import ControlPanel from "@/components/ControlPanel";
 import type { AiModelRead, ConversationRead } from "@/types/api";
 import config from "@/config";
+import styles from "./chat.module.css";
+import linkStyles from "@/styles/links.module.css";
 
 export const Route = createFileRoute("/chat")({
   component: Chat,
@@ -39,7 +40,6 @@ async function fetchActiveModels(): Promise<AiModelRead[]> {
 }
 
 function Chat() {
-  const theme = useTheme();
   const navigate = useNavigate({ from: "/chat" });
   const queryClient = useQueryClient();
 
@@ -88,18 +88,8 @@ function Chat() {
             key={conversation.id}
             to="/chat/$conversationId"
             params={{ conversationId: String(conversation.id) }}
-            activeProps={{
-              style: {
-                fontWeight: "bold",
-                color: theme.colors.link.active,
-              },
-            }}
-            inactiveProps={{
-              style: {
-                fontWeight: "normal",
-                color: theme.colors.link.default,
-              },
-            }}
+            className={linkStyles.link}
+            activeProps={{ "data-status": "active" }}
           >
             {conversation.title}
           </Link>
@@ -108,7 +98,7 @@ function Chat() {
       <Outlet />
       <ControlPanel>
         {activeModels.map((model) => (
-          <div key={model.id} css={{ marginBottom: `${theme.spacing.sm}rem` }}>
+          <div key={model.id} className={styles.model}>
             <strong>{model.name}</strong>
           </div>
         ))}

@@ -1,11 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { createFileRoute, useParams } from "@tanstack/react-router";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useTheme } from "@emotion/react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import config from "@/config";
 import { Container, type ContainerVariant } from "@/components/Container";
-import { pxToRem } from "@/utils";
 import type { ConversationMessageRead } from "@/types/api";
+import styles from "./$conversationId.module.css";
 
 export const Route = createFileRoute("/chat/$conversationId")({
   component: Conversation,
@@ -20,7 +19,6 @@ async function fetchMessages(conversationId: string) {
 }
 
 function Conversation() {
-  const theme = useTheme();
   const queryClient = useQueryClient();
 
   const websocket = useRef<WebSocket | null>(null);
@@ -61,7 +59,6 @@ function Conversation() {
       ws.onclose = null;
       ws.close();
       websocket.current = null;
-
     };
   }, [conversationId]);
 
@@ -79,80 +76,25 @@ function Conversation() {
 
   const containerVariant: ContainerVariant = "content";
 
-  const horizontalPadding = `${theme.spacing.sm}rem`;
-  const verticalPadding = `${theme.spacing.sm}rem`;
-
   return (
-    <div
-      css={{
-        width: "100%",
-        overflowX: "auto",
-        flex: 1,
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <div
-        css={{
-          display: "flex",
-          flexDirection: "column",
-          height: "100%",
-          flex: 1,
-          minWidth: "min-content",
-        }}
-      >
-        <div
-          css={{
-            flex: 1,
-            overflowY: "auto",
-            scrollbarGutter: "stable",
-          }}
-        >
+    <div className={styles.pageContainer}>
+      <div className={styles.messagesContainerWrapper}>
+        <div className={styles.messagesContainer}>
           <Container
             variant={containerVariant}
-            css={{
-              display: "flex",
-              flexDirection: "column",
-              gap: verticalPadding,
-              paddingLeft: `${horizontalPadding}`,
-              paddingRight: `${horizontalPadding}`,
-              paddingTop: `${verticalPadding}`,
-              width: `calc(100% - (${horizontalPadding} * 2))`,
-              overflowX: "hidden",
-            }}
+            className={styles.messagesList}
           >
             {messages?.map((msg, index) => (
-              <div
-                key={index}
-                css={{
-                  padding: verticalPadding,
-                  border: `1px solid ${theme.colors.border}`,
-                }}
-              >
+              <div key={index} className={styles.message}>
                 {msg.content}
               </div>
             ))}
             <div ref={messagesEndRef} />
           </Container>
         </div>
-        <div
-          css={{
-            scrollbarGutter: "stable",
-            width: "100%",
-            overflowY: "hidden",
-            overflowX: "hidden",
-            paddingBottom: verticalPadding,
-          }}
-        >
+        <div className={styles.formContainer}>
           <form
-            css={{
-              display: "flex",
-              paddingLeft: `${horizontalPadding}`,
-              paddingRight: `${horizontalPadding}`,
-              maxWidth: pxToRem(theme.containerWidths[containerVariant]),
-              margin: "0 auto",
-              width: `calc(100% - (${horizontalPadding} * 2))`,
-            }}
+            className={styles.form}
             name="sendMessageForm"
             onSubmit={(e) => {
               e.preventDefault();
@@ -160,11 +102,7 @@ function Conversation() {
             }}
           >
             <input
-              css={{
-                flex: 1,
-                padding: `${theme.spacing.md}rem`,
-                fontSize: `${theme.typography.fontSize.sm}rem`,
-              }}
+              className={styles.input}
               name="messageInputField"
               type="text"
               required
@@ -172,18 +110,7 @@ function Conversation() {
               value={messageText}
               onChange={(e) => setMessageText(e.target.value)}
             />
-            <button
-              type="submit"
-              css={{
-                background: theme.colors.primary,
-                padding: `${theme.spacing.sm}rem ${theme.spacing.md}rem`,
-                fontSize: `${theme.typography.fontSize.lg}rem`,
-                cursor: "pointer",
-                "&:hover": {
-                  filter: "brightness(95%)",
-                },
-              }}
-            >
+            <button type="submit" className={styles.sendButton}>
               Send
             </button>
           </form>

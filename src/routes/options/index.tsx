@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useTheme } from "@emotion/react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import config from "@/config";
@@ -11,6 +10,7 @@ import type {
   AiProviderCreate,
   AiModelRead,
 } from "@/types/api";
+import styles from "./index.module.css";
 
 export const Route = createFileRoute("/options/")({
   component: Providers,
@@ -124,27 +124,10 @@ function Modal({
   children: React.ReactNode;
 }) {
   if (!isOpen) return null;
-  const theme = useTheme();
 
   return (
-    <div
-      css={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-        background: theme.colors.modalBackground,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        zIndex: theme.zIndices.modal,
-      }}
-    >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        css={{ background: theme.colors.surface }}
-      >
+    <div className={styles.modal}>
+      <div onClick={(e) => e.stopPropagation()} className={styles.modalContent}>
         <button onClick={onClose}>×</button>
         {children}
       </div>
@@ -190,7 +173,7 @@ function CreateNewApiKeyModal({
             provider_id: provider.id,
           });
         }}
-        css={{ display: "flex", flexDirection: "column" }}
+        className={styles.form}
       >
         <input
           type="text"
@@ -208,7 +191,7 @@ function CreateNewApiKeyModal({
           }
           required
         />
-        <button type="submit" css={{ alignSelf: "flex-start" }}>
+        <button type="submit" className={styles.formButton}>
           Create
         </button>
       </form>
@@ -251,7 +234,7 @@ function CreateNewProviderModal({
           e.preventDefault();
           createProviderMutation.mutate(newProvider);
         }}
-        css={{ display: "flex", flexDirection: "column" }}
+        className={styles.form}
       >
         <input
           type="text"
@@ -271,7 +254,7 @@ function CreateNewProviderModal({
           }
           required
         />
-        <button type="submit" css={{ alignSelf: "flex-start" }}>
+        <button type="submit" className={styles.formButton}>
           Create
         </button>
       </form>
@@ -327,7 +310,7 @@ function EditProviderModal({
           e.preventDefault();
           updateProviderMutation.mutate(editedProvider);
         }}
-        css={{ display: "flex", flexDirection: "column" }}
+        className={styles.form}
       >
         <input
           type="text"
@@ -437,7 +420,6 @@ function ModelList({
 }
 
 function Providers() {
-  const theme = useTheme();
   const queryClient = useQueryClient();
 
   const [addNewProviderModalOpen, setAddNewProviderModalOpen] = useState(false);
@@ -499,13 +481,7 @@ function Providers() {
   return (
     <div>
       <h1>Provider Options</h1>
-      <div
-        css={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "flex-start",
-        }}
-      >
+      <div className={styles.providersContainer}>
         <CreateNewProviderModal
           isOpen={addNewProviderModalOpen}
           onClose={() => setAddNewProviderModalOpen(false)}
@@ -530,7 +506,7 @@ function Providers() {
         />
 
         <button
-          css={{ marginBottom: `${theme.spacing.md}rem` }}
+          className={styles.buttonMargin}
           onClick={() => setAddNewProviderModalOpen(true)}
         >
           Add new provider
@@ -559,13 +535,13 @@ function Providers() {
 
         <h3>{selectedProvider?.name} keys</h3>
         <button
-          css={{ marginBottom: `${theme.spacing.md}rem` }}
+          className={styles.buttonMargin}
           onClick={() => setCreateNewApiKeyModalOpen(true)}
         >
           Add new key
         </button>
 
-        <div css={{ display: "flex", flexDirection: "column" }}>
+        <div className={styles.keysContainer}>
           {apiKeys
             .filter((apiKey) => apiKey.provider_id === selectedProvider?.id)
             .map((apiKey) => {
@@ -579,11 +555,11 @@ function Providers() {
               return (
                 <div key={apiKey.id}>
                   <div
-                    css={{
-                      background: apiKey.active
-                        ? theme.colors.surface
-                        : theme.colors.disabled.background,
-                    }}
+                    className={
+                      apiKey.active
+                        ? styles.keyRowActive
+                        : styles.keyRowInactive
+                    }
                   >
                     <b>{apiKey.name}</b>: {shortened}
                   </div>
@@ -617,7 +593,7 @@ function Providers() {
 
         <h3>{selectedProvider?.name} models</h3>
         <button
-          css={{ marginBottom: `${theme.spacing.md}rem` }}
+          className={styles.buttonMargin}
           onClick={() => {
             if (selectedProvider)
               refreshModelsMutation.mutate(selectedProvider.id);

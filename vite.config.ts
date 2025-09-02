@@ -10,12 +10,7 @@ export default defineConfig({
       target: "react",
       autoCodeSplitting: true,
     }),
-    react({
-      jsxImportSource: "@emotion/react",
-      babel: {
-        plugins: ["@emotion/babel-plugin"],
-      },
-    }),
+    react(),
   ],
   resolve: {
     alias: {
