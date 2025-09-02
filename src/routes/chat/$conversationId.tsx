@@ -1,24 +1,38 @@
-import { useState, useEffect, useRef, useMemo } from "react";
-import { useParams } from "react-router";
-import { css, useTheme } from "@emotion/react";
+import { useState, useEffect, useRef } from "react";
+import { createFileRoute, useParams } from "@tanstack/react-router";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useTheme } from "@emotion/react";
 import config from "@/config";
 import { Container, type ContainerVariant } from "@/components/Container";
 import { pxToRem } from "@/utils";
-import { useControlPanel } from "@/contexts/ControlPanelContext";
-import SecondaryNavbar from "@/components/SecondaryNavbar";
-import ControlPanel from "@/app/ControlPanel";
-import type { ConversationRead } from "@/types/api";
+import type { ConversationMessageRead } from "@/types/api";
 
-export default function Conversation() {
+export const Route = createFileRoute("/chat/$conversationId")({
+  component: Conversation,
+});
+
+async function fetchMessages(conversationId: string) {
+  const res = await fetch(
+    `${config.HTTP_URL}/conversations/${conversationId}/messages`
+  );
+  if (!res.ok) throw new Error("Failed to fetch conversation messages");
+  return res.json();
+}
+
+function Conversation() {
   const theme = useTheme();
+  const queryClient = useQueryClient();
+
   const websocket = useRef<WebSocket | null>(null);
   const [messageText, setMessageText] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { setPanelContent } = useControlPanel();
-  const [messages, setMessages] = useState(
-    Array.from({ length: 50 }, (_, i) => `Message number ${i + 1}`)
-  );
-  const { conversationId } = useParams();
+
+  const { conversationId } = useParams({ from: "/chat/$conversationId" });
+
+  const { data: messages } = useQuery<ConversationMessageRead[]>({
+    queryKey: ["conversationMessages", conversationId],
+    queryFn: () => fetchMessages(conversationId),
+  });
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -30,7 +44,12 @@ export default function Conversation() {
     ws.onopen = () => console.log("WebSocket connection established");
     ws.onmessage = (event) => {
       const res = JSON.parse(event.data);
-      console.log("WebSocket res:", res);
+      if (res["type"] === "conversation_message_read") {
+        queryClient.setQueryData<ConversationMessageRead[]>(
+          ["conversationMessages", conversationId],
+          (old = []) => [...old, res]
+        );
+      }
     };
     ws.onerror = (error) => console.error("WebSocket error:", error);
     ws.onclose = (e) => console.log("WebSocket connection closed:", e.reason);
@@ -42,15 +61,19 @@ export default function Conversation() {
       ws.onclose = null;
       ws.close();
       websocket.current = null;
-      setPanelContent(null);
+
     };
   }, [conversationId]);
 
   const sendMessage = async () => {
-    if (!websocket.current || !messageText.trim()) return;
-    const message = { content: messageText };
+    if (!messages || !websocket.current || !messageText.trim()) return;
+    const message = {
+      content: messageText,
+      conversation_id: conversationId,
+      parent_message_id:
+        messages.length > 0 ? messages[messages.length - 1].id : null,
+    };
     websocket.current.send(JSON.stringify(message));
-    setMessages((prev) => [...prev, messageText]);
     setMessageText("");
   };
 
@@ -98,7 +121,7 @@ export default function Conversation() {
               overflowX: "hidden",
             }}
           >
-            {messages.map((msg, index) => (
+            {messages?.map((msg, index) => (
               <div
                 key={index}
                 css={{
@@ -106,7 +129,7 @@ export default function Conversation() {
                   border: `1px solid ${theme.colors.border}`,
                 }}
               >
-                {msg}
+                {msg.content}
               </div>
             ))}
             <div ref={messagesEndRef} />

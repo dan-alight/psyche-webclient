@@ -1,64 +1,26 @@
 import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import { createBrowserRouter, RouterProvider, Navigate } from "react-router";
+import ReactDOM from "react-dom/client";
+import { RouterProvider, createRouter } from "@tanstack/react-router";
+import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import "./index.css";
-import App from "@/app/App";
-import Chat from "@/features/chat/Chat";
-import Conversation from "./features/chat/Conversation";
-import ChatLanding from "./features/chat/ChatLanding";
-import Options from "@/features/options/Options";
-import Journal from "@/features/journal/Journal";
-import JournalEntryDetail from "@/features/journal/JournalEntryDetail";
-import Providers from "@/features/options/Providers";
 
-let router = createBrowserRouter([
-  {
-    path: "/",
-    Component: App,
-    children: [
-      {
-        index: true,
-        element: <Navigate to="/chat" replace />,
-      },
-      {
-        path: "chat",
+import { routeTree } from "./routeTree.gen";
 
-        Component: Chat,
-        children: [
-          {
-            index: true,
-            Component: ChatLanding,
-          },
-          {
-            path: ":conversationId",
-            Component: Conversation,
-          },
-        ],
-      },
-      {
-        path: "options",
-        Component: Options,
-        children: [
-          {
-            index: true,
-            Component: Providers,
-          },
-        ],
-      },
-      {
-        path: "journal",
-        Component: Journal,
-      },
-      {
-        path: "journal/:entryId",
-        Component: JournalEntryDetail,
-      },
-    ],
-  },
-]);
+const router = createRouter({ routeTree });
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <RouterProvider router={router} />
-  </StrictMode>
-);
+declare module "@tanstack/react-router" {
+  interface Register {
+    router: typeof router;
+  }
+}
+
+const rootElement = document.getElementById("root")!;
+if (!rootElement.innerHTML) {
+  const root = ReactDOM.createRoot(rootElement);
+  root.render(
+    <StrictMode>
+      <RouterProvider router={router} />
+      <TanStackRouterDevtools router={router} />
+    </StrictMode>
+  );
+}

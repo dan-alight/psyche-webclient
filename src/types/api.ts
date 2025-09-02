@@ -33,6 +33,7 @@ export interface AiModelRead {
   name: string;
   provider_id: number;
   active: boolean;
+  config: Record<string, any>;
 }
 
 export interface AiModelUpdate {
@@ -61,6 +62,10 @@ export interface ConversationRead {
   id: number;
   title: string;
   last_updated: string;
+}
+
+export interface ConversationCreate {
+  title: string | null;
 }
 
 export interface ConversationMessageRead {
