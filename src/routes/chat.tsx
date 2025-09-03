@@ -7,7 +7,6 @@ import {
 } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import SecondaryNavbar from "@/components/SecondaryNavbar";
-import ControlPanel from "@/components/ControlPanel";
 import type { AiModelRead, ConversationRead } from "@/types/api";
 import config from "@/config";
 import styles from "./chat.module.css";
@@ -33,12 +32,6 @@ async function createConversation(title: string): Promise<ConversationRead> {
   return res.json();
 }
 
-async function fetchActiveModels(): Promise<AiModelRead[]> {
-  const res = await fetch(`${config.HTTP_URL}/ai-models/active`);
-  if (!res.ok) throw new Error("Failed to fetch active models");
-  return res.json();
-}
-
 function Chat() {
   const navigate = useNavigate({ from: "/chat" });
   const queryClient = useQueryClient();
@@ -46,11 +39,6 @@ function Chat() {
   const conversationsQuery = useQuery({
     queryKey: ["conversations"],
     queryFn: fetchConversations,
-  });
-
-  const modelsQuery = useQuery({
-    queryKey: ["activeModels"],
-    queryFn: fetchActiveModels,
   });
 
   const createConversationMutation = useMutation({
@@ -66,7 +54,6 @@ function Chat() {
   if (conversationsQuery.isError) return <div>Error loading conversations</div>;
 
   const conversations = conversationsQuery.data ?? [];
-  const activeModels = modelsQuery.data ?? [];
 
   return (
     <>
@@ -96,13 +83,6 @@ function Chat() {
         ))}
       </SecondaryNavbar>
       <Outlet />
-      <ControlPanel>
-        {activeModels.map((model) => (
-          <div key={model.id} className={styles.model}>
-            <strong>{model.name}</strong>
-          </div>
-        ))}
-      </ControlPanel>
     </>
   );
 }
