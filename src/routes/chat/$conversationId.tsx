@@ -13,6 +13,51 @@ import type {
 import ControlPanel from "@/components/ControlPanel";
 import styles from "./$conversationId.module.css";
 
+function AssistantMessage({ content }: { content: string }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const thinkStartTag = "<think>";
+  const thinkEndTag = "</think>";
+
+  const startTagIndex = content.indexOf(thinkStartTag);
+
+  if (startTagIndex !== 0) {
+    return <>{content}</>;
+  }
+
+  const endTagIndex = content.indexOf(thinkEndTag);
+
+  let thinkContent;
+  let postThinkContent = "";
+
+  if (endTagIndex === -1) {
+    thinkContent = content.substring(startTagIndex + thinkStartTag.length);
+  } else {
+    thinkContent = content.substring(
+      startTagIndex + thinkStartTag.length,
+      endTagIndex
+    );
+    postThinkContent = content.substring(endTagIndex + thinkEndTag.length);
+  }
+
+  // Strip leading/trailing whitespace/newlines
+  thinkContent = thinkContent.trim();
+  postThinkContent = postThinkContent.trim();
+
+  return (
+    <>
+      <details
+        className={styles.thinkingBox}
+        open={isOpen}
+        onToggle={(e) => setIsOpen(e.currentTarget.open)}
+      >
+        <summary className={styles.thinkingSummary}>Thinking</summary>
+        {<p className={styles.thinkingContent}>{thinkContent}</p>}
+      </details>
+      {postThinkContent}
+    </>
+  );
+}
+
 export const Route = createFileRoute("/chat/$conversationId")({
   component: Conversation,
 });
@@ -136,45 +181,6 @@ function Conversation() {
 
   const containerVariant: ContainerVariant = "content";
 
-  function AssistantMessage({ content }: { content: string }) {
-    const thinkStartTag = "<think>";
-    const thinkEndTag = "</think>";
-
-    const startTagIndex = content.indexOf(thinkStartTag);
-
-    if (startTagIndex === -1) {
-      return <>{content}</>;
-    }
-
-    const endTagIndex = content.indexOf(thinkEndTag);
-
-    const preThinkContent = content.substring(0, startTagIndex);
-
-    let thinkContent;
-    let postThinkContent = "";
-
-    if (endTagIndex === -1) {
-      thinkContent = content.substring(startTagIndex + thinkStartTag.length);
-    } else {
-      thinkContent = content.substring(
-        startTagIndex + thinkStartTag.length,
-        endTagIndex
-      );
-      postThinkContent = content.substring(endTagIndex + thinkEndTag.length);
-    }
-
-    return (
-      <>
-        {preThinkContent}
-        <details className={styles.thinkingBox}>
-          <summary className={styles.thinkingSummary}>Thinking</summary>
-          <pre className={styles.thinkingContent}>{thinkContent}</pre>
-        </details>
-        {postThinkContent}
-      </>
-    );
-  }
-
   return (
     <>
       <div className={styles.pageContainer}>
@@ -214,10 +220,9 @@ function Conversation() {
                 sendMessage();
               }}
             >
-              <input
+              <textarea
                 className={styles.input}
                 name="messageInputField"
-                type="text"
                 required
                 placeholder="Enter your message"
                 value={messageText}

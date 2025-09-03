@@ -36,11 +36,12 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radii-md);
   max-width: 80%;
+  white-space: pre-wrap;
 }
 
 .userMessage {
   align-self: flex-end;
-  background-color: #dcf8c6;
+  background-color: #f1ffec;
 }
 
 .assistantMessage {
@@ -99,7 +100,5 @@
   padding: var(--spacing-sm);
   border-top: 1px solid var(--color-border);
   background-color: var(--color-detail-content-background);
-  white-space: pre-wrap;
-  word-wrap: break-word;
   font-size: var(--typography-font-size-sm);
 }
