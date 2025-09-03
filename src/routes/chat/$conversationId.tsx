@@ -8,6 +8,7 @@ import type {
   ConversationMessageCreate,
   ChatRequest,
   AiModelRead,
+  ConversationMessagePart,
 } from "@/types/api";
 import ControlPanel from "@/components/ControlPanel";
 import styles from "./$conversationId.module.css";
@@ -104,6 +105,17 @@ function Conversation() {
         queryClient.setQueryData<ConversationMessageRead[]>(
           ["conversationMessages", conversationId],
           (old = []) => [...old, res]
+        );
+      } else if (message_type === "conversation_message_part") {
+        const part = res as ConversationMessagePart;
+        queryClient.setQueryData<ConversationMessageRead[]>(
+          ["conversationMessages", conversationId],
+          (old = []) =>
+            old.map((msg) =>
+              msg.id === part.conversation_message_id
+                ? { ...msg, content: msg.content + part.content }
+                : msg
+            )
         );
       } else if (message_type === "task_status") {
         console.log("Task status received:", res);
