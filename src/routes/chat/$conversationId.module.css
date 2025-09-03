@@ -34,6 +34,18 @@
 .message {
   padding: var(--spacing-sm);
   border: 1px solid var(--color-border);
+  border-radius: var(--radii-md);
+  max-width: 80%;
+}
+
+.userMessage {
+  align-self: flex-end;
+  background-color: #dcf8c6;
+}
+
+.assistantMessage {
+  align-self: flex-start;
+  background-color: #eaeaea;
 }
 
 .formContainer {
@@ -68,4 +80,26 @@
 
 .sendButton:hover {
   filter: brightness(95%);
+}
+
+.thinkingBox {
+  margin-bottom: var(--spacing-sm);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-detail-background);
+}
+
+.thinkingSummary {
+  cursor: pointer;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-weight: var(--typography-font-weight-medium);
+  outline: none;
+}
+
+.thinkingContent {
+  padding: var(--spacing-sm);
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-detail-content-background);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-size: var(--typography-font-size-sm);
 }

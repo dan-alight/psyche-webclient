@@ -4,6 +4,7 @@ import {
   createFileRoute,
   useNavigate,
   useSearch,
+  Link,
 } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Container } from "@/components/Container";
@@ -183,12 +184,7 @@ function Journal() {
 
   const currentPage = pageSearchParam ?? totalPages;
 
-  const {
-    data: journalEntries,
-    isLoading,
-    isError,
-    isFetching,
-  } = useQuery({
+  const { data: journalEntries, isFetching } = useQuery({
     queryKey: ["journalEntries", currentPage],
     queryFn: () => fetchEntries(currentPage, ITEMS_PER_PAGE),
     enabled: !!statsQuery.data,
@@ -259,13 +255,6 @@ function Journal() {
     }
   };
 
-  // --- RENDER ---
-  if (statsQuery.isLoading) return <div>Loading stats...</div>;
-  if (statsQuery.isError) return <div>Error loading stats</div>;
-
-  if (isLoading && !journalEntries) return <div>Loading entries...</div>;
-  if (isError) return <div>Error loading entries</div>;
-
   return (
     <div className={styles.journalContainer}>
       <Container>
@@ -316,6 +305,11 @@ function Journal() {
                 </div>
               ) : (
                 <div>
+                  {/*                   <Link
+                    to="/journal/$entryId"
+                    params={{ entryId: String(journalEntry.id) }}
+                    search={{ fromList: true }}
+                  >Inspect</Link> */}
                   <button
                     onClick={() => {
                       setEditingEntryId(journalEntry.id);

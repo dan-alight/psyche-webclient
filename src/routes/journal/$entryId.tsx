@@ -13,10 +13,8 @@ import styles from "./$entryId.module.css";
 
 export const Route = createFileRoute("/journal/$entryId")({
   component: JournalEntryDetail,
-  validateSearch: (search: Record<string, unknown>): { fromList?: boolean } => {
-    return {
-      fromList: search.fromList === true,
-    };
+  validateSearch: (search: Record<string, unknown>): { fromList: boolean } => {
+    return { fromList: search.fromList === true };
   },
 });
 

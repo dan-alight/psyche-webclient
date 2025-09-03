@@ -1,4 +1,3 @@
-
 :root {
   --color-primary: rgb(55, 226, 95);
   --color-secondary: rgb(1, 1, 1);
@@ -14,6 +13,8 @@
   --color-link-active: rgb(0, 118, 0);
   --color-link-hover: rgb(34, 139, 34);
   --color-modal-background: rgba(255, 255, 255, 0.75);
+  --color-detail-background: rgb(182, 182, 182);
+  --color-detail-content-background: rgb(255, 255, 255);
 
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;

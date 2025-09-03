@@ -136,6 +136,45 @@ function Conversation() {
 
   const containerVariant: ContainerVariant = "content";
 
+  function AssistantMessage({ content }: { content: string }) {
+    const thinkStartTag = "<think>";
+    const thinkEndTag = "</think>";
+
+    const startTagIndex = content.indexOf(thinkStartTag);
+
+    if (startTagIndex === -1) {
+      return <>{content}</>;
+    }
+
+    const endTagIndex = content.indexOf(thinkEndTag);
+
+    const preThinkContent = content.substring(0, startTagIndex);
+
+    let thinkContent;
+    let postThinkContent = "";
+
+    if (endTagIndex === -1) {
+      thinkContent = content.substring(startTagIndex + thinkStartTag.length);
+    } else {
+      thinkContent = content.substring(
+        startTagIndex + thinkStartTag.length,
+        endTagIndex
+      );
+      postThinkContent = content.substring(endTagIndex + thinkEndTag.length);
+    }
+
+    return (
+      <>
+        {preThinkContent}
+        <details className={styles.thinkingBox}>
+          <summary className={styles.thinkingSummary}>Thinking</summary>
+          <pre className={styles.thinkingContent}>{thinkContent}</pre>
+        </details>
+        {postThinkContent}
+      </>
+    );
+  }
+
   return (
     <>
       <div className={styles.pageContainer}>
@@ -149,15 +188,17 @@ function Conversation() {
                 return (
                   <div
                     key={index}
-                    className={styles.message}
-                    style={{
-                      alignSelf:
-                        msg.role === "user" ? "flex-end" : "flex-start",
-                      backgroundColor:
-                        msg.role === "user" ? "#DCF8C6" : "#EAEAEA",
-                    }}
+                    className={`${styles.message} ${
+                      msg.role === "user"
+                        ? styles.userMessage
+                        : styles.assistantMessage
+                    }`}
                   >
-                    {msg.content}
+                    {msg.role === "assistant" ? (
+                      <AssistantMessage content={msg.content} />
+                    ) : (
+                      msg.content
+                    )}
                   </div>
                 );
               })}
