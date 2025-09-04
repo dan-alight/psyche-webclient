@@ -1,3 +1,78 @@
-.model {
-  margin-bottom: var(--spacing-sm);
+.conversationLinkContainer {
+  position: relative;
+  display: flex;
+  width: 100%;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  box-sizing: border-box;
+}
+
+.conversationLink {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: center;
+}
+
+.conversationLinkContainer .menuContainer {
+  visibility: hidden;
+  position: relative;
+}
+
+.conversationLinkContainer .menuContainer:focus-within {
+  visibility: visible;
+}
+
+.conversationLinkContainer:hover .ellipsisButton {
+  visibility: visible;
+}
+
+.renameInput {
+  flex: 1;
+  width: 100%;
+}
+
+.title {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+.ellipsisButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: var(--typography-font-size-sm);
+  color: var(--color-text);
+  padding: 0;
+}
+
+.menu {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border);
+  /* border-radius: var(--radii-md); */
+  z-index: var(--z-indices-dropdown);
+  display: flex;
+  flex-direction: column;
+  width: max-content;
+  /* padding: var(--spacing-xs) 0; */
+}
+
+.menu button {
+  background: none;
+  border: none;
+  text-align: left;
+  padding: var(--spacing-sm) var(--spacing-md);
+  cursor: pointer;
+  color: var(--color-text);
+  width: 100%;
+  font-size: var(--typography-font-size-sm);
+}
+
+.menu button:hover {
+  background-color: var(--color-dropdown-button-hover);
 }

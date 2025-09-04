@@ -11,10 +11,11 @@
   --color-separator: rgb(155, 155, 155);
   --color-link-default: rgb(91, 121, 97);
   --color-link-active: rgb(0, 118, 0);
-  --color-link-hover: rgb(34, 139, 34);
+  --color-link-hover: rgb(233, 255, 233);
   --color-modal-background: rgba(255, 255, 255, 0.75);
   --color-detail-background: rgb(182, 182, 182);
   --color-detail-content-background: rgb(255, 255, 255);
+  --color-dropdown-button-hover: rgb(208, 208, 208);
 
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;

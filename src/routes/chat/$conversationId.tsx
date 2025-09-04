@@ -39,7 +39,6 @@ function AssistantMessage({ content }: { content: string }) {
     postThinkContent = content.substring(endTagIndex + thinkEndTag.length);
   }
 
-  // Strip leading/trailing whitespace/newlines
   thinkContent = thinkContent.trim();
   postThinkContent = postThinkContent.trim();
 
@@ -92,7 +91,6 @@ function Conversation() {
     queryFn: () => fetchMessages(conversationId),
   });
 
-  // 1. Fetch the active models directly in this component
   const { data: activeModels = [], isLoading: modelsLoading } = useQuery<
     AiModelRead[]
   >({
@@ -145,7 +143,6 @@ function Conversation() {
     ws.onmessage = (event) => {
       const res = JSON.parse(event.data);
       const message_type = res["type"];
-      console.log("Received message:", res);
       if (message_type === "conversation_message_read") {
         queryClient.setQueryData<ConversationMessageRead[]>(
           ["conversationMessages", conversationId],

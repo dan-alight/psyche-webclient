@@ -3,11 +3,11 @@
   top: 0;
   max-width: 12.5rem;
   width: 100%;
-  padding: var(--spacing-sm);
+  /* padding: var(--spacing-sm); */
   border-right: 1px solid var(--color-separator);
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-sm);
+  /* gap: var(--spacing-sm); */
   box-sizing: border-box;
   background: var(--color-background);
 }
