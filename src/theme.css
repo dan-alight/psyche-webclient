@@ -1,5 +1,5 @@
 :root {
-  --color-primary: rgb(55, 226, 95);
+  --color-primary: rgb(194, 255, 208);
   --color-secondary: rgb(1, 1, 1);
   --color-background: rgb(255, 255, 255);
   --color-surface: rgb(212, 177, 231);
@@ -9,13 +9,11 @@
   --color-disabled-background: rgb(153, 153, 153);
   --color-disabled-foreground: rgb(0, 0, 0);
   --color-separator: rgb(155, 155, 155);
-  --color-link-default: rgb(91, 121, 97);
+  --color-link-default: rgb(91, 107, 121);
   --color-link-active: rgb(0, 118, 0);
   --color-link-hover: rgb(233, 255, 233);
   --color-modal-background: rgba(255, 255, 255, 0.75);
-  --color-detail-background: rgb(182, 182, 182);
-  --color-detail-content-background: rgb(255, 255, 255);
-  --color-dropdown-button-hover: rgb(208, 208, 208);
+  --color-user-content-surface: rgb(222, 123, 201);
 
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
@@ -33,9 +31,9 @@
   --typography-line-height-body: 1;
   --typography-line-height-heading: 1.5;
 
-  --breakpoints-sm: 480px;
-  --breakpoints-md: 768px;
-  --breakpoints-lg: 1024px;
+  --breakpoint-sm: 480px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
 
   --radii-sm: 0.25rem;
   --radii-md: 0.5rem;

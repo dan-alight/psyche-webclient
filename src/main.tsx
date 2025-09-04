@@ -20,7 +20,7 @@ if (!rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <RouterProvider router={router} />
-      <TanStackRouterDevtools router={router} />
+      {/* <TanStackRouterDevtools router={router} /> */}
     </StrictMode>
   );
 }

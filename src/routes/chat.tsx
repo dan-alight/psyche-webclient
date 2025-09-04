@@ -16,7 +16,7 @@ import type {
   ConversationCreate,
 } from "@/types/api";
 import config from "@/config";
-import styles from "./chat.module.css";
+import styles from "./chat.module.scss";
 import linkStyles from "@/styles/links.module.css";
 
 export const Route = createFileRoute("/chat")({

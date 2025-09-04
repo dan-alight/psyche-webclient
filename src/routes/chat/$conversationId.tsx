@@ -11,7 +11,7 @@ import type {
   ConversationMessagePart,
 } from "@/types/api";
 import ControlPanel from "@/components/ControlPanel";
-import styles from "./$conversationId.module.css";
+import styles from "./$conversationId.module.scss";
 
 function AssistantMessage({ content }: { content: string }) {
   const [isOpen, setIsOpen] = useState(false);

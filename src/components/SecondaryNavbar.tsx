@@ -1,4 +1,4 @@
-import styles from "./SecondaryNavbar.module.css";
+import styles from "./SecondaryNavbar.module.scss";
 
 export default function SecondaryNavbar({
   children,
