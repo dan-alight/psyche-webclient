@@ -65,7 +65,7 @@ export interface ConversationRead {
 }
 
 export interface ConversationCreate {
-  title: string | null;
+  title: string;
 }
 
 export interface ConversationMessageRead {
