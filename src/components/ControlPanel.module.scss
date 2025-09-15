@@ -1,7 +1,7 @@
-@use "@/variables";
+@use "@/base";
 
 .controlPanel {
-  max-width: 12.5rem;
+  max-width: 12rem;
   width: 100%;
   padding: var(--spacing-sm);
   border-left: 1px solid var(--color-separator);
@@ -9,7 +9,7 @@
   overflow-y: auto;
 }
 
-@media (max-width: variables.$breakpoint-md) {
+@media (max-width: base.$breakpoint-md) {
   .controlPanel {
     display: none;
     background-color: green;

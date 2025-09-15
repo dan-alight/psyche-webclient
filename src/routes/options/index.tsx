@@ -115,16 +115,12 @@ async function updateModel(model: AiModelRead): Promise<AiModelRead> {
 }
 
 function Modal({
-  isOpen,
   onClose,
   children,
 }: {
-  isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
 }) {
-  if (!isOpen) return null;
-
   return (
     <div className={styles.modal}>
       <div onClick={(e) => e.stopPropagation()} className={styles.modalContent}>
@@ -136,13 +132,11 @@ function Modal({
 }
 
 function CreateNewApiKeyModal({
-  isOpen,
   onClose,
   provider,
 }: {
-  isOpen: boolean;
   onClose: () => void;
-  provider: AiProviderRead | undefined;
+  provider: AiProviderRead;
 }) {
   const queryClient = useQueryClient();
   const [newApiKey, setNewApiKey] = useState<ApiKeyCreate>({
@@ -160,10 +154,8 @@ function CreateNewApiKeyModal({
     },
   });
 
-  if (!isOpen || !provider) return null;
-
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal onClose={onClose}>
       <form
         name="createApiKeyForm"
         onSubmit={(e) => {
@@ -200,11 +192,9 @@ function CreateNewApiKeyModal({
 }
 
 function CreateNewProviderModal({
-  isOpen,
   onClose,
   onSuccess,
 }: {
-  isOpen: boolean;
   onClose: () => void;
   onSuccess: (provider: AiProviderRead) => void;
 }) {
@@ -224,10 +214,8 @@ function CreateNewProviderModal({
     },
   });
 
-  if (!isOpen) return null;
-
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal onClose={onClose}>
       <form
         name="createProviderForm"
         onSubmit={(e) => {
@@ -263,24 +251,21 @@ function CreateNewProviderModal({
 }
 
 function EditProviderModal({
-  isOpen,
   onClose,
   provider,
   onDeleted,
 }: {
-  isOpen: boolean;
   onClose: () => void;
-  provider: AiProviderRead | undefined;
+  provider: AiProviderRead;
   onDeleted: () => void;
 }) {
   const queryClient = useQueryClient();
-  const [editedProvider, setEditedProvider] = useState<
-    AiProviderRead | undefined
-  >(provider);
+  const [editedProvider, setEditedProvider] =
+    useState<AiProviderRead>(provider);
 
   // Shouldn't do this, instead use key prop to reset state
   useEffect(() => {
-    setEditedProvider(provider);
+    setEditedProvider(provider ?? null);
   }, [provider]);
 
   const updateProviderMutation = useMutation({
@@ -300,10 +285,8 @@ function EditProviderModal({
     },
   });
 
-  if (!isOpen || !provider || !editedProvider) return null;
-
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal onClose={onClose}>
       <form
         name="editProviderForm"
         onSubmit={(e) => {
@@ -339,8 +322,8 @@ function ModelList({
   provider,
   apiKeys,
 }: {
-  provider: AiProviderRead | undefined;
-  apiKeys: ApiKeyRead[] | undefined;
+  provider?: AiProviderRead;
+  apiKeys?: ApiKeyRead[];
 }) {
   const queryClient = useQueryClient();
 
@@ -426,9 +409,9 @@ function Providers() {
   const [editProviderModalOpen, setEditProviderModalOpen] = useState(false);
   const [createNewApiKeyModalOpen, setCreateNewApiKeyModalOpen] =
     useState(false);
-  const [selectedProviderId, setSelectedProviderId] = useState<
-    number | undefined
-  >(undefined);
+  const [selectedProviderId, setSelectedProviderId] = useState<number | null>(
+    null
+  );
 
   // Queries
   const { data: providersData, isLoading: providersLoading } = useQuery({
@@ -482,29 +465,29 @@ function Providers() {
     <div>
       <h1>Provider Options</h1>
       <div className={styles.providersContainer}>
-        <CreateNewProviderModal
-          isOpen={addNewProviderModalOpen}
-          onClose={() => setAddNewProviderModalOpen(false)}
-          onSuccess={(provider) => setSelectedProviderId(provider.id)}
-        />
-
-        <CreateNewApiKeyModal
-          isOpen={createNewApiKeyModalOpen}
-          onClose={() => setCreateNewApiKeyModalOpen(false)}
-          provider={selectedProvider}
-        />
-
-        <EditProviderModal
-          isOpen={editProviderModalOpen}
-          onClose={() => setEditProviderModalOpen(false)}
-          provider={selectedProvider}
-          onDeleted={() => {
-            setSelectedProviderId(
-              providers.length > 1 ? providers[0].id : undefined
-            );
-          }}
-        />
-
+        {addNewProviderModalOpen && (
+          <CreateNewProviderModal
+            onClose={() => setAddNewProviderModalOpen(false)}
+            onSuccess={(provider) => setSelectedProviderId(provider.id)}
+          />
+        )}
+        {createNewApiKeyModalOpen && selectedProvider && (
+          <CreateNewApiKeyModal
+            onClose={() => setCreateNewApiKeyModalOpen(false)}
+            provider={selectedProvider}
+          />
+        )}
+        {editProviderModalOpen && selectedProvider && (
+          <EditProviderModal
+            onClose={() => setEditProviderModalOpen(false)}
+            provider={selectedProvider}
+            onDeleted={() => {
+              setSelectedProviderId(
+                providers.length > 1 ? providers[0].id : null
+              );
+            }}
+          />
+        )}
         <button
           className={styles.buttonMargin}
           onClick={() => setAddNewProviderModalOpen(true)}
@@ -518,7 +501,7 @@ function Providers() {
             value={selectedProvider?.name || ""}
             onChange={(e) =>
               setSelectedProviderId(
-                providers.find((p) => p.name === e.target.value)?.id
+                providers.find((p) => p.name === e.target.value)?.id ?? null
               )
             }
           >

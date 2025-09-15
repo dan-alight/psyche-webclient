@@ -1,9 +1,9 @@
-@use "@/variables";
+@use "@/base";
 
 .secondaryNavbar {
   position: sticky;
   top: 0;
-  max-width: 12.5rem;
+  max-width: 12rem;
   width: 100%;
   padding: var(--spacing-sm);
   border-right: 1px solid var(--color-separator);
@@ -17,7 +17,7 @@
   container-type: inline-size;
 }
 
-@media (max-width: variables.$breakpoint-md) {
+@media (max-width: base.$breakpoint-md) {
   .secondaryNavbar {
     display: none;
   }

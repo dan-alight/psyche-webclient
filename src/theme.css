@@ -13,7 +13,7 @@
   --color-link-active: rgb(0, 118, 0);
   --color-link-hover: rgb(233, 255, 233);
   --color-modal-background: rgba(255, 255, 255, 0.75);
-  --color-user-content-surface: rgb(222, 123, 201);
+  --color-user-content-surface: rgb(149, 200, 244);
 
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
@@ -30,10 +30,6 @@
   --typography-font-weight-bold: 700;
   --typography-line-height-body: 1;
   --typography-line-height-heading: 1.5;
-
-  --breakpoint-sm: 480px;
-  --breakpoint-md: 768px;
-  --breakpoint-lg: 1024px;
 
   --radii-sm: 0.25rem;
   --radii-md: 0.5rem;

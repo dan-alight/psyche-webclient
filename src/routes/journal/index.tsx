@@ -92,7 +92,7 @@ function PaginationControls({
 }: PaginationControlsProps) {
   const navigate = useNavigate({ from: Route.fullPath });
 
-  const [navigateToEntry, setNavigateToEntry] = useState<number | undefined>(
+  const [navigateToEntry, setNavigateToEntry] = useState<number | null>(
     currentPage
   );
 
@@ -118,7 +118,7 @@ function PaginationControls({
           if (!isNaN(value) && value >= 1 && value <= totalPages) {
             setNavigateToEntry(value);
           } else if (e.target.value === "") {
-            setNavigateToEntry(undefined);
+            setNavigateToEntry(null);
           }
         }}
         onBlur={() => {

@@ -13,6 +13,10 @@ import type {
 import ControlPanel from "@/components/ControlPanel";
 import styles from "./$conversationId.module.scss";
 
+export const Route = createFileRoute("/chat/$conversationId")({
+  component: Conversation,
+});
+
 function AssistantMessage({ content }: { content: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const thinkStartTag = "<think>";
@@ -56,10 +60,6 @@ function AssistantMessage({ content }: { content: string }) {
     </>
   );
 }
-
-export const Route = createFileRoute("/chat/$conversationId")({
-  component: Conversation,
-});
 
 async function fetchMessages(conversationId: string) {
   const res = await fetch(
